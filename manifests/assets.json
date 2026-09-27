@@ -1,0 +1,26 @@
+[
+  {
+    "name": "datasets-20260927.tar.gz",
+    "group": "datasets",
+    "bytes": 212706821,
+    "sha256": "df8a367f43f68b658de15207adc477fa80729e3487e0a5aeb95beb8b3af7a815",
+    "release": "data-20260927",
+    "repository": "ASEODA/bot-classification-repro"
+  },
+  {
+    "name": "checkpoints-20260927.tar.gz",
+    "group": "checkpoints",
+    "bytes": 49958415,
+    "sha256": "3ec61830525e00d7fbe2fd03ba4867e17c2fd7de335413b984f6dfb6f1f39fa9",
+    "release": "data-20260927",
+    "repository": "ASEODA/bot-classification-repro"
+  },
+  {
+    "name": "models-20260927.tar.gz",
+    "group": "models",
+    "bytes": 174645737,
+    "sha256": "ad749895167d692f9273af08fff819b11dfe37727e750365ec20beedab016325",
+    "release": "data-20260927",
+    "repository": "ASEODA/bot-classification-repro"
+  }
+]

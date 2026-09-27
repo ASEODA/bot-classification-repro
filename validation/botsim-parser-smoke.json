@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "accounts": {
+    "06hf220": {
+      "label": "bot",
+      "documents": 22,
+      "equal": true
+    },
+    "103gvp": {
+      "label": "human",
+      "documents": 17,
+      "equal": true
+    }
+  },
+  "scope": "two complete accounts; not a full-corpus parse"
+}

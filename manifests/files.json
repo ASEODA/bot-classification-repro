@@ -1,0 +1,1094 @@
+[
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09-1_분량통제.py",
+    "bytes": 119666,
+    "sha256": "b5e7ac32e5ecd4052515acf7f42c07c4b7779aa63e8674149a663ddb7c539af3",
+    "origin": "단계별 진행경과/09-1_분량통제.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/02_기능어목록_생성.py",
+    "bytes": 15988,
+    "sha256": "4a9e339c95ec04b6bb5f3342d134bba2ea79fe12ec4e3437e8a3fcf33d2fcaf8",
+    "origin": "단계별 진행경과/02_기능어목록_생성.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/11_판별기.py",
+    "bytes": 106063,
+    "sha256": "c724efa79f54f100f2028aabcbc7330c80bfe7849e9d756356bc12d9fc7b2cad",
+    "origin": "단계별 진행경과/11_판별기.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/04_기능어측정.py",
+    "bytes": 35390,
+    "sha256": "3d1a29654ec148130490b0a61dcab9a163e5cb5d93b3d37fe65d0d842528a206",
+    "origin": "단계별 진행경과/04_기능어측정.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09-3_서브레딧통제.py",
+    "bytes": 94548,
+    "sha256": "40119527645714d6d34bec6475f69fb1e364c2c6092d07b1faf14d433099bfc9",
+    "origin": "단계별 진행경과/09-3_서브레딧통제.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/12-3_판별기적용.py",
+    "bytes": 59476,
+    "sha256": "a900003e878d1cb19572e3fb4ad853de409064fdc3f582536611e2849a08cd5b",
+    "origin": "단계별 진행경과/12-3_판별기적용.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/06_봇사람비교.py",
+    "bytes": 46332,
+    "sha256": "25511d458fcb324888fa10800609efa68172cb59ada77a88c7a09476c6754bd5",
+    "origin": "단계별 진행경과/06_봇사람비교.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/10-1_귀무오류율.py",
+    "bytes": 86141,
+    "sha256": "2f2bc02bd2548f5eef3e8abeb44453a47cd17dab5cb952e4db6d1f993ea3f85d",
+    "origin": "단계별 진행경과/10-1_귀무오류율.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/08_R블록.py",
+    "bytes": 80376,
+    "sha256": "9b5c8c491a8a44be3c32dbac5e192467c009dbca959246ab3db8790a28af83e1",
+    "origin": "단계별 진행경과/08_R블록.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09-2_게시물유형통제.py",
+    "bytes": 187422,
+    "sha256": "5f04fa384e138a81e0f13cea6616524f9e8ab28b524a3ab2f925724c172692bc",
+    "origin": "단계별 진행경과/09-2_게시물유형통제.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/05_사용률검수.py",
+    "bytes": 33460,
+    "sha256": "1f4e86278e3a6899552767136ff0e7bd3e9156050bd27da9161b3c62d586eab2",
+    "origin": "단계별 진행경과/05_사용률검수.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/13_fox8전이.py",
+    "bytes": 213515,
+    "sha256": "37ce9f7f8e075e3d6a84f2d736137cd756af9102a376c5e9f5b56abd7cd1a6ab",
+    "origin": "단계별 진행경과/13_fox8전이.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/10_동질성검정.py",
+    "bytes": 111719,
+    "sha256": "980a7de4a4ceac82dd27c551e42542620132cd144cbfa2d3bf698b849e95be43",
+    "origin": "단계별 진행경과/10_동질성검정.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/12-2_표a.py",
+    "bytes": 127225,
+    "sha256": "a7e4d5c2c9884cef23da445a16fa3765fed9ed002687892077187ee3ee51277d",
+    "origin": "단계별 진행경과/12-2_표a.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/13-0_댓글한정재파싱.py",
+    "bytes": 56939,
+    "sha256": "111069f44473abfd5d1b8eec535c5a85ae19ea935b2a8ed247a8487d55cebb5c",
+    "origin": "단계별 진행경과/13-0_댓글한정재파싱.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/03_stanza_설치확인.py",
+    "bytes": 16502,
+    "sha256": "fe76543eeab5d47ae64d1d34abe0f0ec51de8cb88133a39fb334457644bc6141",
+    "origin": "단계별 진행경과/03_stanza_설치확인.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/12-1_생성댓글파싱.py",
+    "bytes": 122426,
+    "sha256": "62a8235ead38e1c7c6ac6b7bbb4d8aff81be0f6becb6ffb7916e7815d3155db7",
+    "origin": "단계별 진행경과/12-1_생성댓글파싱.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/04-1_확장재파싱.py",
+    "bytes": 84204,
+    "sha256": "54c675646b7917505eb054be2f3851c020a506e768caa01e5f0aa39bc025c130",
+    "origin": "단계별 진행경과/04-1_확장재파싱.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/01_botsim_적격검열.py",
+    "bytes": 25697,
+    "sha256": "eabf30a82b51a41938a5ed09008f417a72bae21320f42f5617c5dda9ae52ef14",
+    "origin": "단계별 진행경과/01_botsim_적격검열.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/13-1_fox8재파싱.py",
+    "bytes": 55377,
+    "sha256": "071bfa6c98ce3514b5061d864a2276e78c357d43a0bf6a32105384310bfc64f9",
+    "origin": "단계별 진행경과/13-1_fox8재파싱.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/07_형태자질비교.py",
+    "bytes": 80730,
+    "sha256": "c2a5c636c020536ffc9067811441ba5c4644f1aa473459d9394dd522ce5a27b0",
+    "origin": "단계별 진행경과/07_형태자질비교.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/02-1_임계값민감도.py",
+    "bytes": 72798,
+    "sha256": "1935ab705a23998475edc6ae9eb597dd5a5dc0eefde484217c044f343185a5c3",
+    "origin": "단계별 진행경과/02-1_임계값민감도.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/05-06_사전선언.md",
+    "bytes": 5819,
+    "sha256": "258672018cca333371e8e53294cf02df35e2cabea0b36399d0b86534f6aa9e91",
+    "origin": "단계별 진행경과/05-06_사전선언.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_사전선언_뼈대.md",
+    "bytes": 33634,
+    "sha256": "ff4d3a236106fe03b3f238b466643c2f1d2580ca67a90643c05f2b7b526a98f8",
+    "origin": "단계별 진행경과/12_OpenRouter생성_사전선언_뼈대.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/11_판별기_사전선언.md",
+    "bytes": 9272,
+    "sha256": "529d2b9f6eb7b2c14c47e5a60523aa5386b4487ac4e7009bc0d0f8d3ef470c77",
+    "origin": "단계별 진행경과/11_판별기_사전선언.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/10_동질성검정_사전선언.md",
+    "bytes": 20800,
+    "sha256": "cf0c32b3014b523992a601e9d9e6421813c8bb323a860c74c76ed779e57900a8",
+    "origin": "단계별 진행경과/10_동질성검정_사전선언.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/13_fox8전이_사전선언.md",
+    "bytes": 9502,
+    "sha256": "3a1c6a86b5f80b1b466fcd80f556979081957e6a09d68f71b91472cc4e637b42",
+    "origin": "단계별 진행경과/13_fox8전이_사전선언.md"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/11_판별기.json",
+    "bytes": 339613,
+    "sha256": "a802cd3a8ed0ecbded8df0e710ddbc28804421b000af468fabdf1726ce92977c",
+    "origin": "단계별 진행경과/11_판별기.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/13-1_fox8재파싱.json",
+    "bytes": 5231618,
+    "sha256": "f9fd94c4e039e4baff90b0f3ef75b3bea3c22856d76b971bd3f5a641c1b6363e",
+    "origin": "단계별 진행경과/13-1_fox8재파싱.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/10_동질성검정.json",
+    "bytes": 881594,
+    "sha256": "a4032665f4d1b68baec2f3e814ad542381387b38f78f39fddfb7ed60a40201d2",
+    "origin": "단계별 진행경과/10_동질성검정.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/03_설치확인_기록.json",
+    "bytes": 845,
+    "sha256": "96443c6499756fbb818f0c6a42751ea8d0b637452ad14899e3237976c76bdc84",
+    "origin": "단계별 진행경과/03_설치확인_기록.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/02_기능어목록.json",
+    "bytes": 30438,
+    "sha256": "e06b6a83531d941f124ab2d45d52bffce8a9fb2566fda1922df079fc58ed22e6",
+    "origin": "단계별 진행경과/02_기능어목록.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/10-1_귀무오류율.json",
+    "bytes": 761202,
+    "sha256": "64aea3f2a648b6d5fae04d7cfe59a65abd62e2df3b81ab5a0db1794388eb04f2",
+    "origin": "단계별 진행경과/10-1_귀무오류율.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/04-1_확장재파싱.json",
+    "bytes": 15063231,
+    "sha256": "1eba00967c21368a5669f216a63d1a8f863d41f5c4b1a621977b4ccd35813983",
+    "origin": "단계별 진행경과/04-1_확장재파싱.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/08_R블록.json",
+    "bytes": 8850,
+    "sha256": "a63222addaca72f941ad29bc0165cba8fbf408a7696f46172b927805a42c8dde",
+    "origin": "단계별 진행경과/08_R블록.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/04_기능어측정.json",
+    "bytes": 4714767,
+    "sha256": "c4549de5e7ec74ddca3fdd9dd4ecd72e79cb875f5a6e99d36ac72ceaf88944e5",
+    "origin": "단계별 진행경과/04_기능어측정.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/12-1_생성댓글파싱_요약.json",
+    "bytes": 51685,
+    "sha256": "f8fe3efef3f9f39dd033ed099ffb0b50aa55afcdecb5541ca0fc90691c2659c4",
+    "origin": "단계별 진행경과/12-1_생성댓글파싱_요약.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/12_판별기적용.json",
+    "bytes": 560695,
+    "sha256": "1b8d75d9ee2bd07320231cc25919bc228fc00c8c96e586b548f6ee05a72c3826",
+    "origin": "단계별 진행경과/12_판별기적용.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/05_사용률검수.json",
+    "bytes": 3335693,
+    "sha256": "69d87a6743667dd391e44a313a43c402448a0fcc324cc81adf891f2af88dd6b7",
+    "origin": "단계별 진행경과/05_사용률검수.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/12_표a.json",
+    "bytes": 1791456,
+    "sha256": "ee104120ac2d8faffd1d6706f08e52b8f736acfb9863d01a6823459031e36347",
+    "origin": "단계별 진행경과/12_표a.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09-1_분량통제.json",
+    "bytes": 138787,
+    "sha256": "4f5d1e00f9a669fcaf069e278f70c7f96f982f53bad425e7826d21b0ff58f8d5",
+    "origin": "단계별 진행경과/09-1_분량통제.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09-2_게시물유형통제.json",
+    "bytes": 4136781,
+    "sha256": "a829302ef4e8314d421efaab9d75d143daeac360e1772a2c5d93ddf296c33988",
+    "origin": "단계별 진행경과/09-2_게시물유형통제.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/13_fox8전이.json",
+    "bytes": 1919933,
+    "sha256": "bccdf5f7cca64761402738f537ca7db4f964308837046c2b903948bce4eb507a",
+    "origin": "단계별 진행경과/13_fox8전이.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/02-1_임계값민감도.json",
+    "bytes": 489111,
+    "sha256": "8f78fa6aee69c4da940635f2bc9a66e3ad018954f9c506c777c138b9d74e504d",
+    "origin": "단계별 진행경과/02-1_임계값민감도.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/06_비교결과.json",
+    "bytes": 49297,
+    "sha256": "0c781b3d43bf93c2cc3a4c616e39de4d473a0fa660a85d023560baa29699b650",
+    "origin": "단계별 진행경과/06_비교결과.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/13-0_댓글한정재파싱_요약.json",
+    "bytes": 13725,
+    "sha256": "de99a38b30836fec829f47acbf073d877d5630cd8a715f3605a6f8e7a8596422",
+    "origin": "단계별 진행경과/13-0_댓글한정재파싱_요약.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09-3_서브레딧통제.json",
+    "bytes": 180105,
+    "sha256": "d0bab19df68378d8a8d4d195fd0fc803344930744dbc52f1f92a03f83c40f84b",
+    "origin": "단계별 진행경과/09-3_서브레딧통제.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/10-1_귀무오류율_1000회.json",
+    "bytes": 3620887,
+    "sha256": "4275be52031ff0e7e7f511f1053e0e2d455fa8de6783f16f2b6e52bc8cd2f2d8",
+    "origin": "단계별 진행경과/10-1_귀무오류율_1000회.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/01_적격계정.json",
+    "bytes": 23471505,
+    "sha256": "614bc22ffde7c4b995aab501196c8731e1a0d95fd2f8074146b8ce51b70c0921",
+    "origin": "단계별 진행경과/01_적격계정.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/07_형태자질비교.json",
+    "bytes": 53907,
+    "sha256": "1bd5e37a2327aa3a51df0d2f63fa5fd97750d4d222211590e42c571fe969c9e9",
+    "origin": "단계별 진행경과/07_형태자질비교.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/11_판별기_모델.joblib",
+    "bytes": 4362718,
+    "sha256": "7b942d683a5a6b80c1f372113c59fcb40cf42c99ff4d5ca9527d6cce7e0cb496",
+    "origin": "단계별 진행경과/11_판별기_모델.joblib"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/입력_실행전_해시.json",
+    "bytes": 2538,
+    "sha256": "9c29b1dd41dcd910551edf9e1f92db0f3d2ce32a4a2ca6ab0d8e67eebfec2b42",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/입력_실행전_해시.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/기존파일_보존해시.json",
+    "bytes": 4752,
+    "sha256": "99edd020e1c5164fa9351f7a9e472fb0b6463bff017ec2f638733b5effdc384a",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/기존파일_보존해시.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/파싱환경.json",
+    "bytes": 1322,
+    "sha256": "a8d60b8cb1171abd4671f85fec28e1796774d3fcee74cb64488d55c98c0d5e6f",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/파싱환경.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/게시물유형_구성확인.json",
+    "bytes": 1464,
+    "sha256": "2bcb213e2ee42609b7d4d4e493e99235a7a8b08c97169021c3f21e85018144a8",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/게시물유형_구성확인.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/입력코퍼스.json",
+    "bytes": 31889640,
+    "sha256": "5a876a9a8ab7ca55d2e2d9e1eb8d1e01aaad154b3bf6844a9f85b555fc28f462",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/입력코퍼스.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/최종산출물_해시.json",
+    "bytes": 3053,
+    "sha256": "8c704bf30e2b245815ef21000b2e4ce70eba8af09d953d38d07ad2a654deab45",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/최종산출물_해시.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/09번 FMR 통제 재검증 실행 전 고정 계획.md",
+    "bytes": 7058,
+    "sha256": "39400b853927d4fca404f8dff807bcb8ba1a2fbd722a0ed2974a995f5cb45786",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/09번 FMR 통제 재검증 실행 전 고정 계획.md"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/분석코드_해시.json",
+    "bytes": 373,
+    "sha256": "c88e2d1e9909bcc73889e2b4d5adfd5957fd9cf8c0824a8ec9c1ed712a1b235c",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/분석코드_해시.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/test_fmr_controls.py",
+    "bytes": 5420,
+    "sha256": "690a81990f2e90db02182ab1d4b78b1ac1b63ee8fc229af9ecd675e54322c1c6",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/test_fmr_controls.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/기준선_재현점검.json",
+    "bytes": 758,
+    "sha256": "beccc98883321206c8f395bc42b05b0909ddc6a79737a44ad0b0f84ff379233b",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/기준선_재현점검.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_prepare_measure.py",
+    "bytes": 10991,
+    "sha256": "21b0c60324f64bc6848d3e05bcdf7bbd91e7a06e7d27edd868db86745f755ae6",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/fmr_prepare_measure.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/FMR_세통제_결과.json",
+    "bytes": 1084118,
+    "sha256": "860aef1970087adec3a2d82c0a7fb9937b17cd6956b3e4dfc1a6297492799982",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/FMR_세통제_결과.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/FMR_세통제_전체자질.csv",
+    "bytes": 265079,
+    "sha256": "8bc653b1548d45579d1926becfd39e23aad2606367d7aa085cb54ce12614eaf5",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/FMR_세통제_전체자질.csv"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_controls.py",
+    "bytes": 15155,
+    "sha256": "c477e73bbdfad78fafc582493f624d64d33cb342f964aa1a3cbf37de1b5fd6f7",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/fmr_controls.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_verify_artifacts.py",
+    "bytes": 4256,
+    "sha256": "8893bf1aa119d06f2768f32daa391cb93c1ff0b5d6d1d0274f48e149af67acbe",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/fmr_verify_artifacts.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/분량통제_선행결과.json",
+    "bytes": 417313,
+    "sha256": "e8184ac0d8e8f8a1859db8b260631757e147c208e743b583e6a30ca31b506969",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/분량통제_선행결과.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/측정진행.json",
+    "bytes": 245,
+    "sha256": "57fce3c075b39c46d3afb1a53d422dfbadd9c6bc8a73b2d7779bf0d478f81391",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/측정진행.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/09_FMR 통제 재검증/제한코퍼스_원카운트.json",
+    "bytes": 12955155,
+    "sha256": "17638a1b08ad8c34107ffc3352221edfa778a8413233cca68afdd343f5142096",
+    "origin": "단계별 진행경과/09_FMR 통제 재검증/제한코퍼스_원카운트.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/단계별 진행경과/표/EQ1_자질별_기여_전체250.csv",
+    "bytes": 9724,
+    "sha256": "99394d1c9e252b8c82cc56aafcd071eadc4daf3daea216bcd3c2a3c9b8b6a785",
+    "origin": "단계별 진행경과/표/EQ1_자질별_기여_전체250.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/요약.json",
+    "bytes": 74325,
+    "sha256": "5953ffc719471717c859744b12000aea154d9850b0ee48f3c0eb13e66e2e229d",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/요약.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/분할.json",
+    "bytes": 826784,
+    "sha256": "51b638fef7f82b0970ebb4cc3eea67c9b755e5b7dacf77ecc624d275477580eb",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/분할.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/모델ID표.json",
+    "bytes": 609,
+    "sha256": "c9cd5747e4293e0ee16cf30a35c010c765b1b175ac2715cc9498f8d530273c32",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/모델ID표.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/동결.json",
+    "bytes": 6641,
+    "sha256": "16f42b3824d1ce01a498359c4f76c9cd423229da6e0e3213e7196eee21fe91cc",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/동결.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/프롬프트대장.jsonl",
+    "bytes": 41879227,
+    "sha256": "e7535f97bc1271fa632fcf0a611c1391d9a814173930599d2949b14db31ff8e6",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/프롬프트대장.jsonl"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/비용추정.json",
+    "bytes": 11087,
+    "sha256": "a224b554c8f78c5920fbc830d445ac377fa4d18d706e8745aa7b4d2c6e732a19",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/비용추정.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/단계별 진행경과/12_OpenRouter생성_준비/엔드포인트표.json",
+    "bytes": 50307,
+    "sha256": "830c6ee453d9bd0c03b06c0354305a4f2e3ec05df78df580894ff4cc3601adfe",
+    "origin": "단계별 진행경과/12_OpenRouter생성_준비/엔드포인트표.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/09_산포검정.py",
+    "bytes": 131504,
+    "sha256": "fee62f4bebb008cc944d0c1fbd69ea01ea87e01a0772f87446b3dd1d88835f23",
+    "origin": "# 07-12 실행분 보관 (미학습)/09_산포검정.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/09_산포검정.json",
+    "bytes": 341785,
+    "sha256": "d795812235fc5e799725a96d78036681dfbefa77051d8cd375668307f29bb5bb",
+    "origin": "# 07-12 실행분 보관 (미학습)/09_산포검정.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/12_fox8전이.py",
+    "bytes": 313370,
+    "sha256": "8af47d61037ef568a64cb227270424c88518954ddfc93dc9eb3076f6a3976123",
+    "origin": "# 07-12 실행분 보관 (미학습)/12_fox8전이.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/12_fox8전이.json",
+    "bytes": 11766620,
+    "sha256": "714d9b79f17a269bce4dff5b405815f3d01a352e272c2a7c4f216783e6e11697",
+    "origin": "# 07-12 실행분 보관 (미학습)/12_fox8전이.json"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정.json",
+    "bytes": 858391,
+    "sha256": "e791a96daa26339471f82b0f7be4a9969b843c75df50d86c1a7791d92ad751e8",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정_사전선언_v1.1.md",
+    "bytes": 12458,
+    "sha256": "9424e652952a699d52c34c6c81c7757b29ad3ef9faf9bb9f9e8b6d85259d6ffa",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정_사전선언_v1.1.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정.py",
+    "bytes": 86603,
+    "sha256": "805f496ed519f36916fb317651395e329e2b9004d0617e611e1738c2ec346602",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)/10_동질성검정.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정.json",
+    "bytes": 871875,
+    "sha256": "292918f6b92ddd43882e8f2651eeb5d716eac0af5b4d960974f181019b440db2",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10-1_귀무오류율_v1.2.py",
+    "bytes": 87335,
+    "sha256": "a994d208d27efe4ff2d2942d566a903fdf837f60d4b3f33424febeed755468da",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10-1_귀무오류율_v1.2.py"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정_사전선언_v1.2.md",
+    "bytes": 16672,
+    "sha256": "3b34c1bec04e720ab37ceb7700aa382d23caa4396914d8d5000ae1500baeee71",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정_사전선언_v1.2.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정.py",
+    "bytes": 111318,
+    "sha256": "e607385c5acb7f561bb9e07a37edea4fa86968d0cae2e3574b7faaf215a09ec2",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 10 v1.2 (귀무 오류율 관문 불통과)/10_동질성검정.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12_판별기v2.json",
+    "bytes": 686127,
+    "sha256": "1b997fc20c01622348e16bf236b84e870a69e2451c1e6ddc1ea90ec4b390c688",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12_판별기v2.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12-3_판별기ver2.py",
+    "bytes": 129270,
+    "sha256": "88c8ecb617766796ed0f01ab570a022fc7c7e817da12b0bf268292042cbcb069",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12-3_판별기ver2.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기.json",
+    "bytes": 459280,
+    "sha256": "f1b3e1b42714ac5a8fcb7b682ed5b2009a06ff34623c9503ad40f01bb6c72f6e",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기.py",
+    "bytes": 102015,
+    "sha256": "d94d95cdea03d38c4a634884ddd2a81eae596fd0950dbf2683c42d55a14b5b61",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도.json",
+    "bytes": 1062109,
+    "sha256": "749bfefd2e6b0f278326701d5b28d6ebc8e34edf233f6e35a5b4d648bee1db43",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도_사전선언.md",
+    "bytes": 4034,
+    "sha256": "822757fe64572c869f51b27a0af8f9f226f6efea19b8145bf0c1a5f43dc4f638",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도_사전선언.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기_사전선언.md",
+    "bytes": 12222,
+    "sha256": "fcf55e7fb7364347e4c7f680c9124f3b9cddc4147fe224de8664b5560e324e26",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기_사전선언.md"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이.py",
+    "bytes": 236122,
+    "sha256": "4ee7e93d228978e2b67f65c74cce7b7d6ebc348416306bea569c1ad23ef2bb19",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기_모델.joblib",
+    "bytes": 4373027,
+    "sha256": "e6b75865381dfeaa23e68dc0da0107bf10934b7c672bc5426cc65b9ffeb1e9b3",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/11_판별기_모델.joblib"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도.py",
+    "bytes": 30879,
+    "sha256": "7c842525e4e69c29af6ee3e51d0a48f796b8b3b4f43ba83f28b6975105d3f920",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/14_이웃밀도.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이.json",
+    "bytes": 2529781,
+    "sha256": "1504a05af7e56ac7f4eb3a902383a038a12d3cc593b8e0c7f6296af1059fb8ce",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이_사전선언.md",
+    "bytes": 13606,
+    "sha256": "803415f97a45753844666b73a36aa1aa49629248d7affa165a25dfd94fb3912b",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/13_fox8전이_사전선언.md"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12_판별기v2.joblib",
+    "bytes": 2709350,
+    "sha256": "f84ad554e3037aaaca08c01e83f09eeaa54756831bca98a0a8b30ac93dbb6570",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)/12_판별기v2.joblib"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-26 시뮬레이션 10-12 (탐색, 미학습)/12-0_fox8재파싱.py",
+    "bytes": 55377,
+    "sha256": "071bfa6c98ce3514b5061d864a2276e78c357d43a0bf6a32105384310bfc64f9",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-26 시뮬레이션 10-12 (탐색, 미학습)/12-0_fox8재파싱.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-26 시뮬레이션 10-12 (탐색, 미학습)/12-0_fox8재파싱.json",
+    "bytes": 5231618,
+    "sha256": "f9fd94c4e039e4baff90b0f3ef75b3bea3c22856d76b971bd3f5a641c1b6363e",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-26 시뮬레이션 10-12 (탐색, 미학습)/12-0_fox8재파싱.json"
+  },
+  {
+    "asset": "source",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-25 재정렬 전 원본/단계별 진행경과/19_fox8재검증.py",
+    "bytes": 165955,
+    "sha256": "f2a0fdc489381985bebddd4da5b4c9c4de20577dcc6408412f002901be40d980",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-25 재정렬 전 원본/단계별 진행경과/19_fox8재검증.py"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "research/# 07-12 실행분 보관 (미학습)/2026-09-25 재정렬 전 원본/단계별 진행경과/19_fox8재검증.json",
+    "bytes": 195063,
+    "sha256": "c261db48028fe515c2d5506dfd96822f08cc57c751dbe74abd6d610bb33b36d5",
+    "origin": "# 07-12 실행분 보관 (미학습)/2026-09-25 재정렬 전 원본/단계별 진행경과/19_fox8재검증.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/user_post_comment.json",
+    "bytes": 78677080,
+    "sha256": "a1f4ff0054c11c6f6b00f22ef2a1db4b5e8a38b5b6c06031480c408a07e0507f",
+    "origin": "1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/user_post_comment.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/Users.csv",
+    "bytes": 275574,
+    "sha256": "b23a30dcbc2f9cfbbe5b9ebdf88c430eb66e74290033c2d95c2986b7808e7b47",
+    "origin": "1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/Users.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/Readme.md",
+    "bytes": 3874,
+    "sha256": "4cfc5e57bdd319e3f880945c77853d4348256293c05ae66fc24a89f28d2d0f5e",
+    "origin": "1. 원본데이터/2. BotSim Data/BotSim-24-Dataset/Readme.md"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/README.md",
+    "bytes": 5582,
+    "sha256": "c61e647acc79480d534b9b520151e72f440ed81a626884b8ee700f30be8b320b",
+    "origin": "1. 원본데이터/2. BotSim Data/README.md"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/config.yml",
+    "bytes": 1162,
+    "sha256": "fc2726243bb45878a286f87096d6fb0b75be4d1194fb079daf08c0cb294a96c9",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/config.yml"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/modify_content.py",
+    "bytes": 1858,
+    "sha256": "c20e7adfecbb35c5d13a5cc21099e3f337341db818635e23e5996241976bd7c8",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/modify_content.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/main.py",
+    "bytes": 21352,
+    "sha256": "f73e74e03bf353df1620de10d7c96a10a6d7126262417cd42ca16f7aaabece5c",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/main.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/reddit_agent.py",
+    "bytes": 19034,
+    "sha256": "cfbf207af959ea33241e303eb554b8bc03f84b7a491d75f69a67a46932479d9d",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/AgentDesicionCenter/reddit_agent.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Utils/time_utils.py",
+    "bytes": 3185,
+    "sha256": "9ead229c493c815004a48015b132eaaf1b04bfaa0729a7cc4f960faa81161b1b",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Utils/time_utils.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Utils/utils.py",
+    "bytes": 9676,
+    "sha256": "b3649375ac777f0b6442a37d724386ff7984852b85e6b3a98dca6597c816ec21",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Utils/utils.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Action/SelectSubRedditAction.py",
+    "bytes": 6177,
+    "sha256": "b92b4d1b11ca63927ff52e6ac6f69fe136ba166952fd8ca47abf945c2b40fd8a",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Action/SelectSubRedditAction.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Action/Action.py",
+    "bytes": 8184,
+    "sha256": "990727ae4173017e82e4bc670487a45b4876787384f73eff8880a09b6c2b93bc",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Action/Action.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Action/Basics.py",
+    "bytes": 1984,
+    "sha256": "4e11e6078882a1f9a2195fa86f4357356033479aafa979a89f7f12d0df22af29",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Action/Basics.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Action/CreateAgentBots.py",
+    "bytes": 12723,
+    "sha256": "96f5b5cacd8a9a27706820ecd0d22b5f2b708b8b9dab5254db0c2f6055219295",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Action/CreateAgentBots.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/env.py",
+    "bytes": 2438,
+    "sha256": "964b774263f67f5f7ab8ead41dc05b718e00f86f0799358e9c3d24dea493259d",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/env.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/Entity.py",
+    "bytes": 5717,
+    "sha256": "a9ca1715321f16ef43ffe151433cf24d500e4b926e592ce6a902b83ec8800d64",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/Entity.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/RedditData.py",
+    "bytes": 22970,
+    "sha256": "5e9ebb2cd5940c5f7732438d3f9a441d8ecfd67031f811b7413db01db61f07b3",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Environment/RedditData.py"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Comment_2.csv",
+    "bytes": 997,
+    "sha256": "68105a33bc0f41c74bc69095b5ed453185d87a1d71d0ff1ff0279a0ed3e08776",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Comment_2.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Comment_1.csv",
+    "bytes": 12790,
+    "sha256": "1d3b6e2b7f89c5efaf2520eae0dfc6a630a4a277f5dcaa5d4da04b4969725ffa",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Comment_1.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Posts.csv",
+    "bytes": 9154,
+    "sha256": "9f9cb60d89102318dc16f3b7b3e9e6541a66e5b0859a4cc257336a0f9b695a65",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/Posts.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/SubReddits.csv",
+    "bytes": 5406,
+    "sha256": "e473f54fe7c5d1a225fa3e81c7bd6c380000e6889a73db517271a09c16c8a1d2",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/SubReddits.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/HumanUser.csv",
+    "bytes": 333,
+    "sha256": "0339f2e26832fbde831deabef32796a4ba850918d756b7c171ffc852560fae6a",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/HumanUser.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/User.csv",
+    "bytes": 790,
+    "sha256": "10a3fc465ae58e0b9c570a6c219aacc836309c96b8c03b5a1c880ad1f12abe7e",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/RedditData/User.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/Israeli_palestinian_conflict.csv",
+    "bytes": 824,
+    "sha256": "e97aca8cc8ebc3d151a0b54382a667dbd116a2c0361de66a7012af997c6ab135",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/Israeli_palestinian_conflict.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/us_politics.csv",
+    "bytes": 1088,
+    "sha256": "6b8e5cf2632d0cde5271d010ca63f5b7b41499ff0c0061d6d5133882d20cdbb2",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/us_politics.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/world_news.csv",
+    "bytes": 1346,
+    "sha256": "3472f19a398e7ae9b2e2bb5bbd198a4b82f206d244eabfc00f4e4e27d3c1a105",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/world_news.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/ukraine_russia.csv",
+    "bytes": 993,
+    "sha256": "74207f04afd18f7abd348ef180e907d62a2f470d95d4754186e0ab9bfd8c2994",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/Knowledge/ukraine_russia.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/2. BotSim Data/RedditBotSim/Data/LLMAgentProfile/agent_profiles.csv",
+    "bytes": 9315,
+    "sha256": "e337d38acf7e26b512346805c094f9a6748c45cb4385e8c3c2e447a42c3bd2ee",
+    "origin": "1. 원본데이터/2. BotSim Data/RedditBotSim/Data/LLMAgentProfile/agent_profiles.csv"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/3. fox8 Data/fox8_23_dataset.ndjson.gz",
+    "bytes": 124865908,
+    "sha256": "368433bb0d873fc58ae30ba9dff2fd1dc45e18c145d06ea5bf0c772c57ad4030",
+    "origin": "1. 원본데이터/3. fox8 Data/fox8_23_dataset.ndjson.gz"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/3. fox8 Data/fox8_23_dataset.sqlite",
+    "bytes": 120135680,
+    "sha256": "3826eefaba77d566ca5dbe7db41acb104dc600acf49fe7b305f30f1deb937597",
+    "origin": "1. 원본데이터/3. fox8 Data/fox8_23_dataset.sqlite"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/3. fox8 Data/AIBot_fox8/README.md",
+    "bytes": 1890,
+    "sha256": "2d3584ecd0a31b3ef284107ac58cf262bda6e02bb431f3e089508d4f72b8c08c",
+    "origin": "1. 원본데이터/3. fox8 Data/AIBot_fox8/README.md"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/1. 원본데이터/3. fox8 Data/AIBot_fox8/LICENSE",
+    "bytes": 1062,
+    "sha256": "e853654939c6c6bf696c81fdb636e9f0d0094fefadafcede3356975939342af2",
+    "origin": "1. 원본데이터/3. fox8 Data/AIBot_fox8/LICENSE"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/02_UD캐시/en_ewt-ud-test.conllu",
+    "bytes": 1900101,
+    "sha256": "fa024f43dc5da3c5ac02563bc9bd0e974f46cbb1560823976a8f342a37dc494a",
+    "origin": "02_UD캐시/en_ewt-ud-test.conllu"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/02_UD캐시/en_ewt-ud-dev.conllu",
+    "bytes": 1898574,
+    "sha256": "39239e0a60db3ae68f4b7036189f11b6692741d10ff8240dd91f74f2760d90f8",
+    "origin": "02_UD캐시/en_ewt-ud-dev.conllu"
+  },
+  {
+    "asset": "datasets",
+    "path": "research/02_UD캐시/en_ewt-ud-train.conllu",
+    "bytes": 15034493,
+    "sha256": "d68e06122a702464c613076523d56740f047e5bbe89dd90ec32737e04d952143",
+    "origin": "02_UD캐시/en_ewt-ud-train.conllu"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/호출기록_openai_gpt-4o-mini_a480661f.jsonl",
+    "bytes": 89320376,
+    "sha256": "0d492229bd000531df8c8d518127745a7d5c3ec3550e579f8a9321d695353c99",
+    "origin": "external/DM_LAB_data/12_OpenRouter/호출기록_openai_gpt-4o-mini_a480661f.jsonl"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/완전모방기_문서.jsonl",
+    "bytes": 15844468,
+    "sha256": "d5c23481617cb879cf0455933205192e124ed0e08cc322a2241e488f45e95fc9",
+    "origin": "external/DM_LAB_data/12_OpenRouter/완전모방기_문서.jsonl"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "home/DM_LAB_data/12_OpenRouter/13-0_계정사전.json",
+    "bytes": 5442248,
+    "sha256": "7a2ba21109e7f6420b856d2333d7e06719d468f8fd82dad6aef016892b5975d6",
+    "origin": "external/DM_LAB_data/12_OpenRouter/13-0_계정사전.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/호출기록_google_gemini-3.5-flash-lite_281560ad.jsonl",
+    "bytes": 23496648,
+    "sha256": "faebb661567807c5dd87627fae8221a6d85c6c60f3f4c5b766936b94795e9b7c",
+    "origin": "external/DM_LAB_data/12_OpenRouter/호출기록_google_gemini-3.5-flash-lite_281560ad.jsonl"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/추론강도결정.json",
+    "bytes": 6205,
+    "sha256": "09081bd5f22f8df30f271e6fa7c9b872c45141e597086b059dd5ad5cd75eb2b4",
+    "origin": "external/DM_LAB_data/12_OpenRouter/추론강도결정.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/호출기록_deepseek_deepseek-v4.1-flash_6cb884ec.jsonl",
+    "bytes": 23854702,
+    "sha256": "dfa4d4d795d6a19ca4facab4fbac6d1c636a843624099edd3012562419ea07b1",
+    "origin": "external/DM_LAB_data/12_OpenRouter/호출기록_deepseek_deepseek-v4.1-flash_6cb884ec.jsonl"
+  },
+  {
+    "asset": "checkpoints",
+    "path": "home/DM_LAB_data/12_OpenRouter/12-1_계정사전.json",
+    "bytes": 41750062,
+    "sha256": "961433de539a8593a83d64011722dd4dbf1348a350521de73ddbc3c4ee22af17",
+    "origin": "external/DM_LAB_data/12_OpenRouter/12-1_계정사전.json"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/호출기록_openai_gpt-6-luna_4ac7d34c.jsonl",
+    "bytes": 23733541,
+    "sha256": "6e104ecdf28cf9d4dab36b2de64187ac051060d2355d2a4619f6e60a5114a823",
+    "origin": "external/DM_LAB_data/12_OpenRouter/호출기록_openai_gpt-6-luna_4ac7d34c.jsonl"
+  },
+  {
+    "asset": "datasets",
+    "path": "home/DM_LAB_data/12_OpenRouter/호출기록_anthropic_claude-haiku-4.5_a2cd581b.jsonl",
+    "bytes": 34128484,
+    "sha256": "d4bcc1e7fba8118b4d0d0588d7d96bc43bedf3b58afacb57e22e449818b85911",
+    "origin": "external/DM_LAB_data/12_OpenRouter/호출기록_anthropic_claude-haiku-4.5_a2cd581b.jsonl"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/resources.json",
+    "bytes": 457371,
+    "sha256": "4e41c1df152146fa26ed0c006a08feea7a60bb3414bb6d57dbda24ad2e3cb99c",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/resources.json"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/tokenize/combined_nocharlm.pt",
+    "bytes": 660757,
+    "sha256": "0b67d0cc24bf9461176d854ca891706616a6eea3a7f698ccf085fcf559fa87ec",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/tokenize/combined_nocharlm.pt"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/mwt/combined.pt",
+    "bytes": 509238,
+    "sha256": "5f7579111def1f6212c98fa8154ff964bf0eafb9218845ecfa3a1d5a931be237",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/mwt/combined.pt"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/pos/combined_charlm.pt",
+    "bytes": 38649906,
+    "sha256": "e9952f2e2943a583cb7af7150140ec66197bbe046b671fe020324b0f877190eb",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/pos/combined_charlm.pt"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/pretrain/conll17.pt",
+    "bytes": 106701210,
+    "sha256": "edde4c195f91ba45aab3f3a6254202011f284559da8a5ead5e62ce522f819c5e",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/pretrain/conll17.pt"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/forward_charlm/1billion.pt",
+    "bytes": 22743428,
+    "sha256": "8a32ac2226dda8ea5d30f2a15fe3f835639977f299cfda315ce1b8a656596fd2",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/forward_charlm/1billion.pt"
+  },
+  {
+    "asset": "models",
+    "path": "models/stanza/en/backward_charlm/1billion.pt",
+    "bytes": 22743430,
+    "sha256": "5d8cb2306650e4fc2b4f7517cc0fb33b38269e05bbf8d05e712e481471052225",
+    "origin": "external/Library/Caches/stanza/1.14.0/resources/en/backward_charlm/1billion.pt"
+  }
+]

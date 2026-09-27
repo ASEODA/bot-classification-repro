@@ -1,0 +1,10 @@
+.venv/
+.assets/
+.packaging/
+work/
+work-*/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
