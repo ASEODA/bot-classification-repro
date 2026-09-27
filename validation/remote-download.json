@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/ASEODA/bot-classification-repro",
+  "private": true,
+  "source_commit": "faf0c99321ffe2a4343aabf91d2a8653076be00f",
+  "method": "Fresh clone; assets downloaded from GitHub private Release by gh; no local asset copy",
+  "integrity": {
+    "files": 156,
+    "mismatches": [],
+    "passed": true
+  }
+}

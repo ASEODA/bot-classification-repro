@@ -29,6 +29,8 @@
 
 macOS 또는 Linux, Python 3.13.7 기준입니다. GitHub CLI(`gh`)로 이 비공개 저장소에 접근할 수 있어야 합니다. 원문에서 재파싱하면 여러 시간이 걸릴 수 있으므로, 먼저 **분석 재실행**으로 환경을 확인하는 순서를 권합니다.
 
+처음 받는 공동연구자는 저장소 초대를 수락하고 `gh auth login`으로 로그인한 뒤 실행합니다. GitHub의 **Download ZIP은 코드만** 포함하므로 데이터 준비 명령도 실행해야 합니다.
+
 ```bash
 git clone https://github.com/ASEODA/bot-classification-repro.git
 cd bot-classification-repro
@@ -46,6 +48,8 @@ uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
 공유한 **측정 원카운트**에서 동질성·판별기 재학습·OpenRouter 보조 분석·fox8 평가를 실행합니다. 로지스틱 모델을 그대로 불러서 표만 출력하는 명령이 아닙니다. 마지막에 기준 결과와 수치를 비교합니다.
+
+OpenRouter 보조 분석에는 반복 추출·재표집 계산이 있어 이 명령도 수십 분 걸릴 수 있습니다. 진행 상황은 출력에 표시된 `work/logs/`의 로그에서 확인할 수 있습니다.
 
 ### B. 원문부터 재실행
 
