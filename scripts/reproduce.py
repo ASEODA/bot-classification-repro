@@ -146,7 +146,6 @@ def analyze(work):
     for script, args in [
         ('10_동질성검정.py', []),
         ('11_판별기.py', ['--overwrite']),
-        ('12-2_표a.py', []),
         ('12-3_판별기적용.py', ['--overwrite']),
         ('13_fox8전이.py', ['--overwrite']),
     ]:

@@ -47,9 +47,15 @@ uv pip install --python .venv/bin/python -r requirements.txt
 .venv/bin/python scripts/reproduce.py analysis
 ```
 
-공유한 **측정 원카운트**에서 동질성·판별기 재학습·OpenRouter 보조 분석·fox8 평가를 실행합니다. 로지스틱 모델을 그대로 불러서 표만 출력하는 명령이 아닙니다. 마지막에 기준 결과와 수치를 비교합니다.
+공유한 **측정 원카운트**에서 동질성·판별기 재학습·저장된 OpenRouter 자료에 대한 판별기 적용·fox8 평가를 실행합니다. 로지스틱 모델을 그대로 불러서 표만 출력하는 명령이 아닙니다. 마지막에 기준 결과와 수치를 비교합니다.
 
-OpenRouter 보조 분석에는 반복 추출·재표집 계산이 있어 이 명령도 수십 분 걸릴 수 있습니다. 진행 상황은 출력에 표시된 `work/logs/`의 로그에서 확인할 수 있습니다.
+OpenRouter 자료는 전달이 주목적이므로, 오래 걸리는 표 a의 재표집·민감도 분석은 기본 명령에서 제외했습니다. 원래 코드와 결과는 포함되어 있으며 필요하면 별도로 실행할 수 있습니다. 이 선택 실행도 새 API 호출은 하지 않습니다.
+
+```bash
+.venv/bin/python scripts/reproduce.py step --script 12-2_표a.py
+```
+
+진행 상황은 출력에 표시된 `work/logs/`의 로그에서 확인할 수 있습니다.
 
 ### B. 원문부터 재실행
 
