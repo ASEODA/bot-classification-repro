@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": {
+    "help_from_other_working_directory": true,
+    "invalid_mode_stops": true,
+    "extra_arguments_stop": true,
+    "full_preserves_existing_work": true,
+    "incomplete_workspace_stops": true,
+    "failed_integrity_record_stops": true
+  },
+  "scope": "Launcher preflight only; installation stubs used for incomplete-workspace checks. End-to-end replay recorded separately."
+}

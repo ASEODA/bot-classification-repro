@@ -34,4 +34,4 @@
 - macOS의 Rosetta/x86 Python과 arm64 NumPy를 섞으면 import 오류가 난다. Apple Silicon에서는 arm64 Python으로 환경을 만든다.
 - 파싱 모델은 압축 자료에 동봉한 파일을 사용하고, 실행기의 환경 변수로 그 위치를 지정한다.
 
-검증 기록은 [validation 폴더](../validation/)에 있다. 실행 시간이 포함된 원 로그는 각 작업폴더의 `logs/`에 쌓인다.
+검증 기록은 [validation 폴더](validation/)에 있다. 실행 시간이 포함된 원 로그는 각 작업폴더의 `logs/`에 쌓인다.

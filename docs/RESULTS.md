@@ -67,4 +67,4 @@ BotSim에서 고정한 모형으로 점수를 계산한 뒤, fox8를 5겹으로 
 - `12_판별기적용.json`
 - `13_fox8전이.json`
 
-Git에서 바로 확인할 축약 수치는 [expected_metrics.json](../manifests/expected_metrics.json)에 있다.
+Git에서 바로 확인할 축약 수치는 [expected_metrics.json](../scripts/manifests/expected_metrics.json)에 있다.

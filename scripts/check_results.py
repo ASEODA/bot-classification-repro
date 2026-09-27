@@ -37,7 +37,7 @@ def compare(a,b,path=''):
 if __name__=='__main__':
     work=Path(sys.argv[1]).resolve()
     actual=collect(work/'research/단계별 진행경과')
-    expected=json.loads((REPO/'manifests/expected_metrics.json').read_text(encoding='utf-8'))
+    expected=json.loads((REPO/'scripts/manifests/expected_metrics.json').read_text(encoding='utf-8'))
     errors=compare(actual,expected)
     report={'passed':not errors,'differences':errors,'metrics':actual,
             'scope':'Numerical summaries only; historical timestamps and machine paths are not compared.'}

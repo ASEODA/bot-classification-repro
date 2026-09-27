@@ -33,7 +33,7 @@ def sha(path):
 def prepare(work, download):
     if work.exists():
         raise FileExistsError(f'Use a new workspace or continue with run/verify: {work}')
-    assets = read(REPO/'manifests/assets.json')
+    assets = read(REPO/'scripts/manifests/assets.json')
     for asset in assets:
         path = REPO/'.assets'/asset['name']
         if not path.exists() and download:
@@ -57,7 +57,7 @@ def prepare(work, download):
     verify(work)
 
 def verify(work):
-    rows = read(REPO/'manifests/files.json')
+    rows = read(REPO/'scripts/manifests/files.json')
     wrong = [r['path'] for r in rows if not (work/r['path']).is_file()
              or sha(work/r['path']) != r['sha256']]
     report = {'files': len(rows), 'mismatches': wrong, 'passed': not wrong}
