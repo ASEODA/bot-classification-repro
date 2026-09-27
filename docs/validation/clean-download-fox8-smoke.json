@@ -1,9 +1,0 @@
-{
-  "passed": true,
-  "accounts": {
-    "1000410554064830470": true,
-    "1009265903022768128": true,
-    "101011196": true
-  },
-  "scope": "Fresh GitHub download and clean analytical environment; all account fields compared for three accounts, not full reparse."
-}

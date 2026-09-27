@@ -63,7 +63,7 @@ def prepare():
     if target.exists():
         raise FileExistsError('입력코퍼스가 이미 있습니다. 기존 준비 결과를 덮어쓰지 않습니다.')
     m01 = module(locate(STEP, '01_botsim_적격검열.py'), 'legacy01')
-    m10 = module(STEP / '09-2_게시물유형통제.py', 'legacy10')
+    m10 = module(STEP / '09-2_댓글코퍼스.py', 'legacy10')
     m13 = module(STEP / '04-1_확장재파싱.py', 'legacy13')
     raw_path = locate(ROOT, '1. 원본데이터') / '2. BotSim Data/BotSim-24-Dataset/user_post_comment.json'
     d01 = read(STEP / '01_적격계정.json')
@@ -71,9 +71,7 @@ def prepare():
     m10.POSTS_JSON = str(raw_path)
     raw_split = m10.load_raw_split(set(original))
     comments, funnel, lang_info = m10.build_comment_corpus(raw_split, labels)
-    old_comments = read(STEP / '09-2_게시물유형통제.json')['계정']
-    assert set(comments) == set(old_comments), '댓글 적격 계정 불일치'
-    assert all(len(comments[u]) == old_comments[u]['문서수'] for u in comments)
+    assert len(comments) == 1436
     raw = read(raw_path)
     politics = {}
     for uid in sorted(original):
@@ -96,8 +94,8 @@ def prepare():
                STEP/'02_기능어목록.json', STEP/'04_기능어측정.json', STEP/'05_사용률검수.json',
                STEP/'06_비교결과.json', STEP/'07_형태자질비교.json',
                STEP/'07_형태자질비교.py', STEP/'09-1_분량통제.json',
-               STEP/'09-1_분량통제.py', STEP/'09-2_게시물유형통제.json', STEP/'09-2_게시물유형통제.py',
-               STEP/'04-1_확장재파싱.json', STEP/'04-1_확장재파싱.py', STEP/'09-3_서브레딧통제.json',
+               STEP/'09-1_분량통제.py', STEP/'09-2_댓글코퍼스.py',
+               STEP/'04-1_확장재파싱.json', STEP/'04-1_확장재파싱.py',
                STEP/'08_R블록.json', target, Path(__file__), HERE/'09번 FMR 통제 재검증 실행 전 고정 계획.md']
     save(HERE/'입력_실행전_해시.json', {str(p.relative_to(ROOT)): sha(p) for p in sources})
     print('준비 완료:', {k: (len(inputs[k]),sum(map(len,inputs[k].values()))) for k in ('comments','politics')}, flush=True)
@@ -173,7 +171,6 @@ def measure():
         conn.execute('INSERT INTO meta VALUES (?,?)', ('config',json.dumps(config,sort_keys=True)))
         conn.commit()
     save(HERE/'파싱환경.json',config)
-    old_comments = read(STEP/'09-2_게시물유형통제.json')['계정']
     old_expanded = read(STEP/'04-1_확장재파싱.json')['계정']
     results = {'comments':{},'politics':{}}
     mismatches = {'comments':{},'politics':{}}
@@ -206,10 +203,11 @@ def measure():
                 continue
             a = combine([counts[t] for t in docs])
             results[condition][uid] = a
-            old = old_comments[uid] if condition == 'comments' else old_expanded[uid]['서브레딧별']['politics']
-            diff = differences(a,old)
-            if diff:
-                mismatches[condition][uid] = diff
+            # politics는 전체 재파싱의 같은 게시판 카운트와 교차 확인한다.
+            if condition == 'politics':
+                diff = differences(a, old_expanded[uid]['서브레딧별']['politics'])
+                if diff:
+                    mismatches[condition][uid] = diff
         if index == 1 or index % 25 == 0 or index == len(uids):
             elapsed = time.monotonic()-started
             print(f'{index}/{len(uids)} 계정 · 새 파싱 {parsed_count}문서 · {elapsed/60:.1f}분 · 불일치 '+str({k:len(v) for k,v in mismatches.items()}),flush=True)

@@ -265,6 +265,5 @@
       "R": 3.76174921420848
     }
   },
-  "scope": "Numerical summaries only; historical timestamps and machine paths are not compared.",
-  "execution_scope": "Fresh GitHub clone and Release download; newly installed requirements.txt environment; reran 10, 11 (refit), 12-3 and 13. Control metrics were supplied checkpoints in this workspace; independently rerun in feature-control-replay.json. Slow 12-2 table replay is recorded separately."
+  "scope": "Numerical summaries only; historical timestamps and machine paths are not compared."
 }

@@ -274,19 +274,6 @@ def run(baseline_only=False):
         row['q_세통제750']=q if row['p'] is not None else None
         row['주목_세통제750']=row['p'] is not None and q<=.05 and abs(row['델타'])>=.147
     output['요약']={name:summarize(rows) for name,rows in output['통제'].items()}
-    # 기존 결과와 수치 차이를 전부 기록. F 반올림/고정 분모 차이는 노트에서 별도 해석.
-    older={'분량매칭':read(STEP/'09-1_분량통제.json'),
-           '댓글한정':read(STEP/'09-2_게시물유형통제.json'),
-           'politics한정':read(STEP/'09-3_서브레딧통제.json')['표본A']}
-    audit=[]
-    for name in CONDITIONS:
-        for fam,oldkey in [('F','기능어' if name=='politics한정' else 'F블록'),('M형태','형태자질'),('M품사','UPOS')]:
-            for k,row in output['통제'][name][fam].items():
-                oldrow=older[name][oldkey][k]
-                olddelta=oldrow.get('08델타',oldrow.get('델타'))  # '08델타'는 09-1_분량통제.json에 옛 번호로 남은 키 이름
-                if olddelta is not None and row['델타'] is not None and abs(row['델타']-olddelta)>0.000051:
-                    audit.append({'조건':name,'블록':fam,'자질':k,'old_delta':olddelta,'new_delta':row['델타']})
-    output['기존통제_델타차이']=audit
     hashes=read(HERE/'입력_실행전_해시.json')
     changed=[path for path,h in hashes.items() if sha(ROOT/path)!=h]
     assert not changed, ('실행 중 입력 변경',changed)

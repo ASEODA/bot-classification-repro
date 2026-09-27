@@ -1,81 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-12-0_fox8재파싱.py
-────────────────────────────────────────────────────────────────────────────
-한계 먼저
-    · 이 파일은 새 결과를 만들지 않는다. 옛 12(보관)가 한 번 지나가며 버린
-      정보 — 문장마다의 길이 — 를 같은 길로 다시 지나가며 줍는 일이다.
-      04-1이 BotSim에서 한 일을 fox8에서 한다.
-    · 정합 관문이 통과해도 "옛 12와 같은 문서를 같은 파서로 읽었다"는 것까지만
-      보증한다. fox8 자료 자체의 교란(봇 2023 · 사람 ≤2020, 답글 비율 차이)은
-      하나도 건드리지 않는다. 그것은 12의 서술 규칙(사전선언 9절)이 맡는다.
-    · 문장 경계는 stanza 토크나이저가 정한다. 트윗은 마침표 없이 끝나거나
-      이모지·해시태그로 끊기는 일이 많아 '문장'이 레딧보다 덜 문법적인
-      단위다. 문장 길이 목록은 그 경계를 그대로 믿은 값이다.
-
-목적
-    12(fox8 전이)의 시험 (a)·(b)·(c)는 R 자질(문장당 토큰수·구두점 비율·
-    문장길이 변동계수)을 fox8에서도 재야 한다. 그런데 옛 12 JSON에는 계정별
-    문장수·토큰수 합계만 있고 문장 길이 목록이 없다. 변동계수는 합계에서
-    복원할 수 없다. 그래서 한 번 더 파싱한다(사전선언 12의 3절).
-
-무엇을 따르나
-    12_fox8전이_사전선언.md 의 2절(자료)과 3절(12-0 fox8 재파싱).
-        · 대상 — 옛 12 JSON "계정"의 1,991계정(봇 1,094 · 사람 897).
-        · 정제 — 옛 12의 clean_doc 와 문서 선택 규칙을 한 글자도 바꾸지 않고
-          복사한다(is_retweet = 0 · 자기폭로 문장 절제 · URL·멘션 제거 ·
-          20자 미만 제거 · 계정별 시간순 최근 200건).
-        · 파싱 — stanza tokenize,pos · use_gpu=False · 계정 단위 bulk_process
-          (04·04-1과 같은 구성).
-        · 저장 — 계정별 문서수·문장수·토큰수·구두점 제외 토큰수·구두점
-          토큰수·문장 길이 목록(구두점 제외 토큰수, 08 정의). 기능어·UPOS·
-          자질 카운트도 함께 둔다(정합 관문의 보조 대조용).
-        · 정합 관문 — 계정별 문장수·토큰수가 옛 12의 '연도별' 합산과 같아야
-          한다. 어긋난 계정이 1%를 넘으면 중단한다.
-        · 100계정마다 중간 저장, 재개 가능.
-
-라벨 규율
-    라벨(봇/사람)은 옛 12 JSON에서 읽어 결과 파일에 **저장만** 한다. 문서
-    선택·정제·파싱·정합 판정 어디에도 들어가지 않는다. 라벨이 닿는 지점은
-    로그에 [라벨 사용] 표시를 단다(저장 1곳, 관문 불일치의 라벨별 분해 1곳 —
-    후자는 원인 진단용이며 판정에 쓰지 않는다).
-
-구현 결정 (사전선언에 없어 이 파일을 쓰며 정한 것 — JSON 설정에도 적는다)
-    D1. 계정 단위 langid 판정은 계정 목록을 정할 뿐 문서 선택에 관여하지
-        않는다. 대상 목록은 옛 12 JSON에서 오므로 langid는 '재현 확인'으로만
-        돌린다(적격 1,991계정이 다시 나오는지). langid가 없으면 건너뛴다.
-    D2. 파싱 전 '문서 선택 재현 관문'을 하나 더 둔다. 계정별·버킷별
-        (연도|답글여부) 문서수가 옛 12와 같은지 본다. 문서수가 어긋나면
-        문장수·토큰수도 어긋날 수밖에 없으므로, 95분을 쓰기 전에 잡으려는
-        것이다. 문턱은 본 관문과 같은 1%다.
-    D3. 정합 관문이 1%를 넘으면 '중단'을 이렇게 구현한다: 측정치는 버리지
-        않고 JSON에 저장하되 설정.관문통과 = false 로 적고 종료 코드 1로
-        끝낸다. 12는 이 값이 false이면 읽지 않는다. 95분짜리 측정치를
-        버리면 원인 진단 재료까지 버리게 되기 때문이다.
-    D4. 사전선언 3절에는 12-0 전용 예측(P12-*)이 없다. 3절에 적힌 기대값
-        셋(문서 165,532건 · 정합 완전 일치 · 약 95분)을 실행 전 고정값으로
-        삼아 자동 대조한다. '약 95분'의 판정 폭은 ±25%(71~119분)로 둔다.
-    D5. 시드 20260926 을 torch에 건다. 12-0에는 무작위 절차가 없고 추론은
-        평가 모드라 결과에 영향이 없어야 한다. 공통 규칙이라 걸어 둔다.
-    D6. stanza 모델은 ~/stanza_resources 가 아니라 stanza 1.14 기본 위치
-        (~/Library/Caches/stanza/1.14.0/resources)에 있다. 옛 12도 경로를
-        지정하지 않고 기본값으로 Pipeline을 만들었으므로 같은 호출을 쓴다.
-        실제 모델 경로를 JSON에 적는다.
-    D7. 버킷별(연도|답글여부) 문서수·문장수·토큰수·구두점 제외 토큰수를
-        함께 저장한다. 관문이 어긋났을 때 어느 버킷에서 어긋났는지 보려는
-        진단 재료다. 문장 길이 목록은 계정 단위로만 저장한다.
-
-실행
-    python -u 12-0_fox8재파싱.py            ← 본 실행 (이 폴더에 산출)
-    python -u 12-0_fox8재파싱.py 20 <폴더>   ← 시험 실행: 앞 20계정만, <폴더>에 산출
-    venv: /Users/son/.claude/venvs/audio-transcribe/bin/python (stanza 1.14.0)
-
-산출 (이 파일과 같은 폴더)
-    12-0_fox8재파싱.json         계정별 측정치 · 관문 결과 · 기대값 대조
-    12-0_fox8재파싱_출력.log     화면 출력 그대로 (tee로 받는다)
-    12-0_fox8재파싱_진행.json    중간 저장. 끝나면 지운다.
-"""
+"""fox8 원문 정제·적격 계정 선정·Stanza 측정. 최종 연구 규칙 고정판."""
 
 import functools
 import hashlib
@@ -104,21 +29,18 @@ print = functools.partial(print, flush=True)
 #   STAGE_DIR = …/단계별 진행경과          (02 기능어 목록이 있는 곳)
 #   ROOT      = …/연구주제                 (원본데이터·보관 폴더가 있는 곳)
 HERE = os.path.dirname(os.path.abspath(__file__))
-STAGE_DIR = os.path.dirname(HERE)
+STAGE_DIR = HERE
 ROOT = os.path.dirname(STAGE_DIR)
 
 FOX8_DB = f"{ROOT}/1. 원본데이터/3. fox8 Data/fox8_23_dataset.sqlite"
-OLD12_DIR = f"{ROOT}/# 07-12 실행분 보관 (미학습)"
-OLD12_JSON = f"{OLD12_DIR}/12_fox8전이.json"       # 대상 계정 · 정합 관문 상대
-OLD12_PY = f"{OLD12_DIR}/12_fox8전이.py"           # 정제 규칙의 원본 (해시만 잰다)
 FUNCWORDS_JSON = f"{STAGE_DIR}/02_기능어목록.json"  # 기능어 172종
 
 # 시험 실행이면 산출 폴더를 바꾼다(정본 폴더에 시험 산출이 섞이지 않게).
 TEST_N = int(sys.argv[1]) if len(sys.argv) > 1 else None
 OUT_DIR = sys.argv[2] if len(sys.argv) > 2 else HERE
 SUFFIX = "_시험" if TEST_N else ""
-OUT_JSON = f"{OUT_DIR}/12-0_fox8재파싱{SUFFIX}.json"
-PROGRESS_JSON = f"{OUT_DIR}/12-0_fox8재파싱{SUFFIX}_진행.json"
+OUT_JSON = f"{OUT_DIR}/13-1_fox8재파싱{SUFFIX}.json"
+PROGRESS_JSON = f"{OUT_DIR}/13-1_fox8재파싱{SUFFIX}_진행.json"
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -153,29 +75,13 @@ RE_WS = re.compile(r"\s+")                            # [옛 12에서 가져옴]
 SEED = 20260926                 # 공통 규칙 (D5)
 CHECKPOINT_EVERY = 100          # 사전선언 3절: 100계정마다 중간 저장
 WARMUP_ACCOUNTS = 20            # 처음 20계정의 실측 속도로 끝을 추정한다 [04]
-GATE_MAX_FRAC = 0.01            # 사전선언 3절: 어긋난 계정이 1%를 넘으면 중단
 EXPECTED_FW_HASH = "382b68572f03bc23"   # 옛 12 설정.기능어_해시 (사슬 확인)
 EXPECTED_ACCOUNTS = 1991
 EXPECTED_LABELS = {"bot": 1094, "human": 897}
 
 # 사전선언 3절에 적힌 기대값 (D4). 결과를 보기 전에 고정한 값이다.
 # 빗나가도 지우지 않는다. 화면과 JSON에 그대로 남긴다.
-EXPECTATIONS = [
-    {"번호": "E12-0-1",
-     "서술": "재구성한 코퍼스가 165,532문서다 (3절 '165,532문서')",
-     "판정규칙": "적격 1,991계정의 문서수 합이 정확히 165,532이면 적중"},
-    {"번호": "E12-0-2",
-     "서술": "계정별 문장수·토큰수가 옛 12의 연도 합산값과 일치한다 (3절 정합 관문)",
-     "판정규칙": "불일치 계정 0이면 적중. 0 < 불일치 ≤ 1%면 '관문 통과·예측 빗나감', "
-                "1% 초과면 관문 실패"},
-    {"번호": "E12-0-3",
-     "서술": "파싱 소요가 약 95분이다 (3절 '165,532문서 × 약 34ms ≈ 95분')",
-     "판정규칙": "이번 실행의 파싱 소요(재개 시 누적)가 95분 ±25%(71~119분) 안이면 "
-                "적중 (구현 결정 D4)"},
-]
 EXPECTED_DOCS = 165532
-EXPECTED_MINUTES = 95.0
-EXPECTED_MIN_TOL = 0.25
 
 # 축약형 자가검증 — 04와 같은 문장, 곧은 판과 굽은 판 [04·옛 12에서 가져옴]
 SELF_CHECK_TEXT = "I don't think they've seen it, and it isn't mine."
@@ -296,7 +202,7 @@ def build_fox8_corpus(conn):
       · 10건 미만 계정 제외. 계정 단위 langid 'en' 판정.
 
     이 함수는 langid 판정 전의 후보 전체(candidates)와 깔때기 수치를 돌려준다.
-    대상 계정을 고르는 것은 main()이 옛 12 JSON 목록으로 한다(D1).
+    main()에서 langid 영어 판정으로 적격 계정을 정한다.
     """
     cur = conn.cursor()
     drop = Counter()
@@ -366,7 +272,7 @@ def build_fox8_corpus(conn):
 def langid_eligible(candidates):
     """
     옛 12의 계정 단위 언어 판정을 다시 돌려 'en' 계정 집합을 돌려준다 (D1).
-    langid가 없으면 None. 이 집합은 재현 확인에만 쓰고 대상 선정에는 안 쓴다.
+    langid가 없으면 None. main()은 이를 오류로 처리한다.
     """
     try:
         import langid
@@ -663,378 +569,65 @@ def run_measurement(nlp, work, funcword_set, fp):
 # ════════════════════════════════════════════════════════════════════════
 # [5] 정합 관문
 # ════════════════════════════════════════════════════════════════════════
-def old_totals(old_rec):
-    """옛 12 계정 한 칸의 '연도별' 버킷을 합산한다."""
-    tot = {"문서수": 0, "문장수": 0, "토큰수": 0, "토큰수_구두점제외": 0}
-    fw, up, ft = Counter(), Counter(), Counter()
-    for b in old_rec["연도별"].values():
-        for k in tot:
-            tot[k] += b[k]
-        fw.update(b["기능어"])
-        up.update(b["UPOS"])
-        ft.update(b["자질"])
-    tot["기능어"], tot["UPOS"], tot["자질"] = dict(fw), dict(up), dict(ft)
-    return tot
 
 
-def consistency_gate(done, old_acc, labels):
-    """
-    계정별로 옛 12와 맞춰 본다.
-      본 관문(사전선언 3절): 문장수·토큰수가 둘 다 같아야 '일치'.
-      보조 대조(판정에 안 씀): 문서수 · 구두점 제외 토큰수 · 기능어·UPOS·자질
-        카운트 전체 · 버킷별 [문서수, 문장수, 토큰수, 구두점제외].
-      내부 관계(전 계정): len(문장길이)=문장수 · sum(문장길이)=구두점제외 ·
-        구두점토큰수 = 토큰수 − 구두점제외.
-    """
-    uids = sorted(done)
-    mism, examples = [], []
-    aux = Counter()
-    rel_bad = []
-    for uid in uids:
-        a, o_rec = done[uid], old_acc[uid]
-        o = old_totals(o_rec)
-        if a["문장수"] != o["문장수"] or a["토큰수"] != o["토큰수"]:
-            mism.append(uid)
-            if len(examples) < 15:
-                examples.append({"계정": uid,
-                                 "문장수": [a["문장수"], o["문장수"]],
-                                 "토큰수": [a["토큰수"], o["토큰수"]],
-                                 "문서수": [a["문서수"], o["문서수"]]})
-        if a["문서수"] != o["문서수"]:
-            aux["문서수_불일치"] += 1
-        if a["토큰수_구두점제외"] != o["토큰수_구두점제외"]:
-            aux["토큰수_구두점제외_불일치"] += 1
-        for field in ("기능어", "UPOS", "자질"):
-            if a[field] != o[field]:
-                aux[f"{field}_불일치"] += 1
-        old_b = {k: [v["문서수"], v["문장수"], v["토큰수"], v["토큰수_구두점제외"]]
-                 for k, v in o_rec["연도별"].items()}
-        if a["버킷별"] != old_b:
-            aux["버킷별_불일치"] += 1
-        if not (len(a["문장길이"]) == a["문장수"]
-                and sum(a["문장길이"]) == a["토큰수_구두점제외"]
-                and a["구두점토큰수"] == a["토큰수"] - a["토큰수_구두점제외"]
-                and a["구두점토큰수"] == a["UPOS"].get("PUNCT", 0)):
-            rel_bad.append(uid)
-
-    n = len(uids)
-    frac = len(mism) / n if n else 0.0
-    # [라벨 사용] 불일치의 라벨별 분해 — 원인 진단용. 판정에는 쓰지 않는다.
-    by_label = dict(Counter(labels[u] for u in mism))
-    return {
-        "규칙": "계정별 문장수·토큰수가 옛 12 JSON 계정[uid]['연도별'] 합산값과 둘 다 같으면 일치",
-        "대상계정수": n,
-        "불일치계정수": len(mism),
-        "불일치비율": frac,
-        "문턱": GATE_MAX_FRAC,
-        "통과": frac <= GATE_MAX_FRAC,
-        "완전일치": len(mism) == 0,
-        "불일치계정": mism,
-        "불일치_예시": examples,
-        "불일치_라벨별_진단용": by_label,
-        "보조대조_불일치계정수": {k: aux.get(k, 0) for k in
-                          ("문서수_불일치", "토큰수_구두점제외_불일치", "기능어_불일치",
-                           "UPOS_불일치", "자질_불일치", "버킷별_불일치")},
-        "내부관계_위반계정수": len(rel_bad),
-        "내부관계_위반계정": rel_bad[:50],
-        "합계_재파싱": {k: sum(done[u][k] for u in uids) for k in
-                     ("문서수", "문장수", "토큰수", "토큰수_구두점제외", "구두점토큰수")},
-        "합계_옛12": {k: sum(old_totals(old_acc[u])[k] for u in uids) for k in
-                    ("문서수", "문장수", "토큰수", "토큰수_구두점제외")},
-    }
 
 
 # ════════════════════════════════════════════════════════════════════════
 # [6] 본 흐름
 # ════════════════════════════════════════════════════════════════════════
 def main():
-    t_start = time.time()
-    line("12-0 fox8 재파싱 — 문장 길이 목록 확보 (사전선언 12의 3절)")
-    print(f"  실행 {time.strftime('%Y-%m-%d %H:%M:%S')} · python {platform.python_version()}"
-          f" · {platform.system()} {platform.machine()}")
-    if TEST_N:
-        print(f"  ※ 시험 실행: 앞 {TEST_N}계정만. 산출 폴더 {OUT_DIR}")
-
-    # ── [0/5] 입력 확인 ─────────────────────────────────────────
-    line("[0/5] 입력 확인 — 정본은 읽기만 한다")
-    for path, what in [(FOX8_DB, "fox8 sqlite"), (OLD12_JSON, "옛 12 JSON"),
-                       (OLD12_PY, "옛 12 스크립트"), (FUNCWORDS_JSON, "02 기능어 목록")]:
-        if not os.path.exists(path):
-            print(f"■ 중단 — {what} 없음: {path}")
-            sys.exit(1)
-        print(f"      있음  {what}")
-
-    funcwords = json.load(open(FUNCWORDS_JSON, encoding="utf-8"))["기능어"]
-    funcwords = sorted({normalize_apostrophe(w) for w in funcwords})
-    funcword_set = set(funcwords)
-    fw_hash = sha16("\n".join(funcwords))
-    print(f"      기능어 {len(funcwords)}종 · 해시 {fw_hash} "
-          f"(옛 12 {EXPECTED_FW_HASH}) → {'일치' if fw_hash == EXPECTED_FW_HASH else '불일치'}")
-    if fw_hash != EXPECTED_FW_HASH:
-        print("■ 중단 — 기능어 목록이 옛 12와 다르면 기능어 대조가 성립하지 않습니다.")
-        sys.exit(1)
-
-    old = json.load(open(OLD12_JSON, encoding="utf-8"))
-    old_acc = old["계정"]
-    old_conf = old["설정"]
-    old_corpus = old["코퍼스"]
-    del old
-    print(f"      옛 12 계정 {len(old_acc):,}개 · 문서 {sum(v['문서수'] for v in old_acc.values()):,}건")
-    # [라벨 사용] 저장만 한다. 선택·정제·파싱·판정에 쓰지 않는다.
-    labels = {u: v["라벨"] for u, v in old_acc.items()}
-    lab_count = dict(Counter(labels.values()))
-    print(f"      [라벨 사용] 라벨을 읽어 결과 파일 저장용으로만 보관 → {lab_count}")
-    if len(old_acc) != EXPECTED_ACCOUNTS or lab_count != EXPECTED_LABELS:
-        print(f"■ 중단 — 대상 계정 수가 사전선언 2절(1,991: 봇 1,094·사람 897)과 다릅니다.")
-        sys.exit(1)
-
-    # ── [1/5] 자가검증 (파서 없이) ──────────────────────────────
-    line("[1/5] 자가검증 관문 — 집계·정제 규칙을 손계산과 맞춘다")
-    ok_agg, rows_agg = self_check_aggregate(funcword_set)
-    ok_cln, rows_cln = self_check_clean()
-    if not (ok_agg and ok_cln):
-        print("■ 중단 — 자가검증 실패. 파싱을 시작하지 않습니다.")
-        sys.exit(1)
-    print("\n      두 검사 통과.")
-
-    # ── [2/5] 문서 선택 재현 ────────────────────────────────────
-    line("[2/5] 문서 선택 재현 — 옛 12의 규칙으로 코퍼스를 다시 짓는다")
-    print("      규칙: is_retweet=0 → clean_doc(자기폭로 절제·URL·멘션·20자) →")
-    print("            계정별 (시각, 순번) 최근 200건 → 10건 이상 → 계정 단위 langid en")
-    conn = sqlite3.connect(f"file:{FOX8_DB}?mode=ro", uri=True)
-    candidates, funnel = build_fox8_corpus(conn)
-    conn.close()
-
-    # 깔때기 수치를 옛 12와 나란히 본다 (정보용).
-    old_filter = old_corpus["필터별_탈락"]
-    funnel_cmp = {
-        "행_탈락사유": [funnel["행_탈락사유"], old_filter["행_탈락사유"]],
-        "상한초과_절삭문서수": [funnel["상한초과_절삭문서수"], old_filter["상한초과_절삭문서수"]],
-        "언어판정_대상계정수": [funnel["언어판정_대상계정수"], old_filter["언어판정_대상계정수"]],
-        "자기폭로_절제문서수": [funnel["자기폭로_절제문서수"],
-                        sum(old_filter["자기폭로_절제문서수"].values())],
-    }
-    for k, (new_v, old_v) in funnel_cmp.items():
-        print(f"      {k:<16} 재구성 {new_v} · 옛 12 {old_v}  {'같음' if new_v == old_v else '다름'}")
-    funnel_same = all(a == b for a, b in funnel_cmp.values())
-
-    t0 = time.time()
-    eligible = langid_eligible(candidates)
-    if eligible is None:
-        lang_check = {"수행": False, "사유": "langid 없음"}
-        print("      langid 없음 → 계정 집합 재현 확인을 건너뜀 (D1)")
-    else:
-        target = set(old_acc)
-        lang_check = {"수행": True, "재현_en계정수": len(eligible),
-                      "옛12에만": sorted(target - eligible),
-                      "재현에만": sorted(eligible - target),
-                      "일치": eligible == target}
-        print(f"      langid 재현: en {len(eligible):,}계정 · 옛 12와 "
-              f"{'완전히 같음' if eligible == target else '다름'} "
-              f"(옛12에만 {len(target - eligible)} · 재현에만 {len(eligible - target)}) "
-              f"· {time.time() - t0:.1f}초")
-
-    missing = sorted(set(old_acc) - set(candidates))
-    if missing:
-        print(f"■ 중단 — 옛 12 계정 {len(missing)}개가 재구성 후보에 없습니다: {missing[:10]}")
-        sys.exit(1)
-    work = {u: candidates[u] for u in sorted(old_acc)}
-    del candidates
-
-    # 파싱 전 관문 (D2): 계정별·버킷별 문서수가 옛 12와 같은가
-    doc_mism = []
-    for u, docs in work.items():
-        mine = Counter(k for _, k in docs)
-        theirs = {k: v["문서수"] for k, v in old_acc[u]["연도별"].items()}
-        if dict(mine) != theirs:
-            doc_mism.append(u)
-    n_docs = sum(len(v) for v in work.values())
-    doc_frac = len(doc_mism) / len(work)
-    print(f"      대상 {len(work):,}계정 · 문서 {n_docs:,}건 (옛 12 {EXPECTED_DOCS:,})")
-    print(f"      버킷별 문서수 불일치 계정 {len(doc_mism)} ({doc_frac:.2%}) "
-          f"→ {'통과' if doc_frac <= GATE_MAX_FRAC else '실패'}")
-    if doc_frac > GATE_MAX_FRAC:
-        print("■ 중단 — 파서에 넣기 전 문서 선택이 옛 12와 다릅니다. 정제 규칙·쿼리 순서를 보십시오.")
-        print(f"  예: {doc_mism[:10]}")
-        sys.exit(1)
-
-    if TEST_N:
-        work = {u: work[u] for u in sorted(work)[:TEST_N]}
-        print(f"      시험 실행: {len(work)}계정으로 줄임")
-
-    corpus_hash = sha16("\n".join(f"{u}\t{k}\t{t}" for u in sorted(work)
-                                  for t, k in work[u]))
-    fp = {"기능어_해시": fw_hash, "계정수": len(work),
-          "문서수": sum(len(v) for v in work.values()), "코퍼스_해시": corpus_hash}
-    print(f"      입력 지문 {fp}")
-
-    # ── [3/5] 파이프라인 + 축약형 검사 ──────────────────────────
-    line("[3/5] 파이프라인 — stanza tokenize,pos · use_gpu=False (04·옛 12와 같은 호출)")
+    """원본 DB에서 적격 계정을 다시 선정한다. 과거 실행 JSON은 사용하지 않는다."""
     import stanza
     import torch
+    started = time.time()
+    funcwords = sorted({normalize_apostrophe(w) for w in
+                        json.load(open(FUNCWORDS_JSON, encoding="utf-8"))["기능어"]})
+    fw_hash = sha16("\n".join(funcwords))
+    assert len(funcwords) == 172 and fw_hash == EXPECTED_FW_HASH
+    conn = sqlite3.connect(f"file:{FOX8_DB}?mode=ro", uri=True)
+    candidates, funnel = build_fox8_corpus(conn)
+    labels_all = dict(conn.execute("SELECT user_id, label FROM users"))
+    conn.close()
+    eligible = langid_eligible(candidates)
+    if eligible is None:
+        raise RuntimeError("langid가 필요합니다. requirements.txt 환경을 사용하세요.")
+    work = {u: candidates[u] for u in sorted(eligible)}
+    labels = {u: labels_all[u] for u in work}
+    assert len(work) == EXPECTED_ACCOUNTS
+    assert dict(Counter(labels.values())) == EXPECTED_LABELS
+    assert sum(map(len, work.values())) == EXPECTED_DOCS
+    if TEST_N:
+        work = {u: work[u] for u in sorted(work)[:TEST_N]}
+    corpus_hash = sha16("\n".join(f"{u}\t{k}\t{text}" for u in sorted(work)
+                                  for text, k in work[u]))
+    fp = {"기능어_해시": fw_hash, "계정수": len(work),
+          "문서수": sum(map(len, work.values())), "코퍼스_해시": corpus_hash}
+    print("원본에서 재선정:", fp)
+    for fn in (self_check_aggregate,):
+        assert fn(set(funcwords))[0]
+    assert self_check_clean()[0]
     torch.manual_seed(SEED)
-    t0 = time.time()
-    nlp = stanza.Pipeline(lang="en", processors="tokenize,pos",
-                          verbose=False, use_gpu=False)
-    model_paths = {name: proc.config.get("model_path")
-                   for name, proc in nlp.processors.items()}
-    print(f"      생성 {time.time() - t0:.1f}초 · stanza {stanza.__version__} · "
-          f"torch {torch.__version__} · 프로세서 {list(nlp.processors)}")
-    for name, pth in model_paths.items():
-        print(f"      모델 {name:<9} {pth}")
-    if not hasattr(nlp, "bulk_process"):
-        print("■ 중단 — 이 stanza 버전에는 bulk_process가 없습니다.")
-        sys.exit(1)
-    ok_tok, rows_tok = self_check_contraction(nlp, funcword_set)
-    if not ok_tok:
-        print("■ 중단 — 축약형 검사 실패. stanza 버전·모델·02 목록을 확인하십시오.")
-        sys.exit(1)
-
-    # ── [4/5] 파싱 ─────────────────────────────────────────────
-    line(f"[4/5] 파싱 — 계정 단위 bulk_process · {CHECKPOINT_EVERY}계정마다 중간 저장")
-    res = run_measurement(nlp, work, funcword_set, fp)
+    nlp = stanza.Pipeline(lang="en", processors="tokenize,pos", verbose=False,
+                          use_gpu=False, download_method=None)
+    assert self_check_contraction(nlp, set(funcwords))[0]
+    res = run_measurement(nlp, work, set(funcwords), fp)
     if res is None:
-        sys.exit(1)
+        raise RuntimeError("파싱 재개 입력 지문 불일치")
     done, run_sec, total_sec = res
-
-    # ── [5/5] 정합 관문 · 기대값 대조 · 저장 ──────────────────────
-    line("[5/5] 정합 관문 — 계정별 문장수·토큰수 대 옛 12 '연도별' 합산")
-    gate = consistency_gate(done, old_acc, labels)
-    print(f"      대상 {gate['대상계정수']:,}계정 · 불일치 {gate['불일치계정수']} "
-          f"({gate['불일치비율']:.4%}) · 문턱 {GATE_MAX_FRAC:.0%} → "
-          f"{'통과' if gate['통과'] else '실패'}{' (완전 일치)' if gate['완전일치'] else ''}")
-    print(f"      합계 재파싱 {gate['합계_재파싱']}")
-    print(f"      합계 옛 12   {gate['합계_옛12']}")
-    print(f"      보조 대조 불일치 계정수 {gate['보조대조_불일치계정수']}")
-    print(f"      내부 관계 위반 계정 {gate['내부관계_위반계정수']}")
-    if gate["불일치계정수"]:
-        print(f"      [라벨 사용] 불일치 라벨별(진단용) {gate['불일치_라벨별_진단용']}")
-        for ex in gate["불일치_예시"][:10]:
-            print(f"        {ex}")
-    if gate["내부관계_위반계정수"]:
-        print("■ 내부 관계 위반 — 집계 코드 결함. 관문 실패로 처리합니다.")
-        gate["통과"] = False
-
-    # 원인 서술 — 완전 일치가 아니면 로그에 적는다(공통 규칙).
-    cause = None
-    if not gate["완전일치"]:
-        aux = gate["보조대조_불일치계정수"]
-        if aux["문서수_불일치"] or aux["버킷별_불일치"]:
-            cause = ("버킷별 문서수 또는 문장수·토큰수가 어긋난다. 문서 선택(정제 규칙·"
-                     "쿼리 순서)의 차이가 먼저 의심된다.")
-        else:
-            cause = ("문서수·버킷 구성은 같고 문장·토큰 경계만 어긋난다. 같은 문서를 "
-                     "파서가 다르게 끊은 것이다 — stanza/torch 버전·모델 파일·수치 "
-                     "연산(스레드 수 등)의 차이가 의심된다.")
-        print(f"      원인 추정: {cause}")
-    gate["원인추정"] = cause
-
-    # 기대값 대조 (D4)
-    line("기대값 자동 대조 — 사전선언 3절에 적힌 값 (빗나가도 지우지 않는다)")
-    n_docs_done = sum(done[u]["문서수"] for u in done)
-    minutes = total_sec / 60
-    lo, hi = EXPECTED_MINUTES * (1 - EXPECTED_MIN_TOL), EXPECTED_MINUTES * (1 + EXPECTED_MIN_TOL)
-    exp_results = []
-    for e in EXPECTATIONS:
-        r = dict(e)
-        if e["번호"] == "E12-0-1":
-            r["실측"] = n_docs_done
-            r["적중"] = (n_docs_done == EXPECTED_DOCS) if not TEST_N else None
-        elif e["번호"] == "E12-0-2":
-            r["실측"] = f"불일치 {gate['불일치계정수']}/{gate['대상계정수']}"
-            r["적중"] = gate["완전일치"]
-            r["관문통과"] = gate["통과"]
-        else:
-            r["실측"] = f"{minutes:.1f}분 ({total_sec / max(n_docs_done, 1) * 1000:.2f} ms/문서)"
-            r["적중"] = (lo <= minutes <= hi) if not TEST_N else None
-        exp_results.append(r)
-        mark = {True: "적중", False: "빗나감", None: "시험 실행이라 판정 안 함"}[r["적중"]]
-        print(f"      {r['번호']}  {r['서술']}")
-        print(f"               실측 {r['실측']} → {mark}")
-
-    # 요약 통계 (라벨 없이)
-    all_lens = [n for u in done for n in done[u]["문장길이"]]
-    summary = {
-        "문장수_전체": len(all_lens),
-        "문장길이_평균": statistics.fmean(all_lens) if all_lens else None,
-        "문장길이_중앙": statistics.median(all_lens) if all_lens else None,
-        "문장길이_최대": max(all_lens) if all_lens else None,
-        "구두점제외_0토큰_문장수": sum(1 for n in all_lens if n == 0),
-        "문장5개미만_계정수": sum(1 for u in done if done[u]["문장수"] < 5),
-    }
-    print(f"\n      문장 길이 요약(라벨 없이) {summary}")
-
-    out_acc = {}
-    for u in sorted(done):
-        a = dict(done[u])
-        a = {"라벨": labels[u], **a}     # [라벨 사용] 저장만
-        out_acc[u] = a
-
-    wall = time.time() - t_start
-    out = {
-        "설정": {
-            "실행일": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "python": platform.python_version(),
-            "platform": f"{platform.system()} {platform.machine()}",
-            "stanza": stanza.__version__,
-            "torch": torch.__version__,
-            "모델경로": model_paths,
-            "파이프라인": 'stanza.Pipeline(lang="en", processors="tokenize,pos", '
-                     'verbose=False, use_gpu=False) · 계정 단위 bulk_process',
-            "사전선언": "12_fox8전이_사전선언.md 2절·3절",
-            "시드": SEED,
-            "시험실행": TEST_N,
-            "관문통과": gate["통과"],
-            "입력": {"fox8_sqlite": os.path.relpath(FOX8_DB, ROOT),
-                   "옛12_JSON": os.path.relpath(OLD12_JSON, ROOT),
-                   "옛12_JSON_sha16": file_sha16(OLD12_JSON),
-                   "옛12_py_sha16": file_sha16(OLD12_PY),
-                   "옛12_실행일": old_conf.get("실행일"),
-                   "기능어_JSON": os.path.relpath(FUNCWORDS_JSON, ROOT),
-                   "기능어_해시": fw_hash, "기능어_개수": len(funcwords)},
-            "입력지문": fp,
-            "정제규칙": {"MIN_CHARS": MIN_CHARS, "MIN_DOCS": MIN_DOCS, "MAX_DOCS": MAX_DOCS,
-                     "LANG_TARGET": LANG_TARGET, "is_retweet": 0,
-                     "쿼리": "SELECT user_id, created_at, text, is_reply FROM tweets WHERE is_retweet = 0",
-                     "정렬키": "(시각못읽음, created_at, 통과순번) 오름차순 · 계정별 최근 200건",
-                     "출처": "옛 12_fox8전이.py 의 clean_doc·build_fox8_corpus 그대로"},
-            "저장필드": {"문장길이": "문장마다 구두점(UPOS PUNCT)을 뺀 토큰수 (08 정의)",
-                     "구두점토큰수": "UPOS PUNCT 토큰수 = 토큰수 − 토큰수_구두점제외",
-                     "버킷별": "연도|답글여부 → [문서수, 문장수, 토큰수, 토큰수_구두점제외] (D7)",
-                     "라벨": "저장만. 파싱·관문 판정에 쓰지 않음"},
-            "구현결정": {
-                "D1": "langid는 대상 선정이 아니라 재현 확인에만 쓴다. 대상은 옛 12 JSON '계정' 1,991.",
-                "D2": "파싱 전 계정별·버킷별 문서수 대조 관문(문턱 1%)을 추가.",
-                "D3": "정합 관문 1% 초과 시 측정치는 저장하되 설정.관문통과=false, 종료 코드 1.",
-                "D4": "사전선언 3절의 기대값 셋을 자동 대조. '약 95분' 판정 폭은 ±25%(71~119분).",
-                "D5": "torch.manual_seed(20260926). 12-0에는 무작위 절차가 없다.",
-                "D6": "stanza 모델은 ~/stanza_resources가 아니라 1.14 기본 위치(모델경로 참조). 옛 12와 같은 기본 호출.",
-                "D7": "버킷별 문서수·문장수·토큰수·구두점제외를 진단용으로 저장.",
-            },
-            "자가검증": {"집계": rows_agg, "정제": rows_cln, "축약형": rows_tok},
-            "문서선택재현": {"깔때기": funnel, "깔때기_옛12대조": funnel_cmp,
-                       "깔때기_일치": funnel_same, "langid재현": lang_check,
-                       "버킷별문서수_불일치계정수": len(doc_mism),
-                       "버킷별문서수_불일치계정": doc_mism[:50]},
-            "정합관문": gate,
-            "기대값대조": exp_results,
-            "문장길이요약": summary,
-            "소요": {"파싱_이번실행초": run_sec, "파싱_누적초": total_sec, "전체_이번실행초": wall},
-            "라벨별_계정수": lab_count,
-        },
-        "계정": out_acc,
-    }
+    for u, a in done.items():
+        assert len(a["문장길이"]) == a["문장수"]
+        assert sum(a["문장길이"]) == a["토큰수_구두점제외"]
+        assert a["UPOS"].get("PUNCT", 0) == a["토큰수"] - a["토큰수_구두점제외"]
+    out = {"설정": {"관문통과": True, "입력지문": fp,
+             "정제규칙": {"MIN_CHARS": MIN_CHARS, "MIN_DOCS": MIN_DOCS, "MAX_DOCS": MAX_DOCS,
+                          "LANG_TARGET": LANG_TARGET},
+             "문서선택": "비리트윗 → 정제 → 최근 200건 → 10건 이상 → 계정 단위 영어 판정",
+             "깔때기": funnel, "stanza": stanza.__version__, "torch": torch.__version__,
+             "소요초": time.time()-started, "파싱초": total_sec},
+           "계정": {u: {"라벨": labels[u], **done[u]} for u in sorted(done)}}
     write_json(OUT_JSON, out)
-    print(f"\n      저장 {OUT_JSON} ({os.path.getsize(OUT_JSON) / 1e6:.1f} MB)")
-    if os.path.exists(PROGRESS_JSON):
-        os.remove(PROGRESS_JSON)
-        print("      중간 저장 파일을 지웠습니다.")
-
-    line("끝")
-    print(f"      정합 관문 {'통과' if gate['통과'] else '실패'} · 전체 {fmt_dur(wall)}")
-    if not gate["통과"]:
-        print("■ 중단 — 정합 관문 실패. 12는 이 파일을 쓰면 안 됩니다 (설정.관문통과=false).")
-        sys.exit(1)
+    print("저장:", OUT_JSON)
 
 
 if __name__ == "__main__":

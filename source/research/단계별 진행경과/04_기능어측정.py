@@ -223,7 +223,7 @@ def build_pipeline():
     import stanza
     print("[준비] 파이프라인 생성 중...")
     nlp = stanza.Pipeline(lang="en", processors="tokenize,pos",
-                          verbose=False, use_gpu=False)
+                          verbose=False, use_gpu=False, download_method=None)
     print("[준비] 완료")
     return nlp
 

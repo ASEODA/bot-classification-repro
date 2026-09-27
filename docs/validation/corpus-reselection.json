@@ -1,0 +1,7 @@
+{
+  "function_words": true,
+  "comments": true,
+  "politics": true,
+  "comment_funnel": true,
+  "comment_language": true
+}

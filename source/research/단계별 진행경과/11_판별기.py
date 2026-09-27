@@ -1,97 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-11_판별기.py  (마감판 · 사전선언 11_판별기_사전선언.md 마감판, 2026-09-27)
-────────────────────────────────────────────────────────────────────────────
-한계 먼저
-    · 이 파일의 성능 수치는 전부 "BotSim 매칭 표본 안에서"의 값이다.
-      학습 표본은 글 길이를 맞춘 1,024계정(봇 512 · 사람 512)이다. 짧거나
-      긴 계정은 캘리퍼 매칭에서 이미 빠져 있다. 단일 모델 · 단일 프레임워크
-      자료다. 다른 자료로의 적용은 12-3 · 13이 따로 묻는다.
-    · 천장 때문에 BotSim 안에서는 도구 사이의 우열을 판정할 수 없다.
-    · 밀도는 같은 묶음에 닮은 봇이 여럿 있을 때만 작동한다. 단독 봇은 잡지
-      못한다. 사람도 좁은 게시판에서 서로 닮으면 밀도가 오를 수 있다.
-    · 밀도 · 제안 점수는 채점 묶음에 따라 바뀐다. 같은 계정도 다른 묶음에서는
-      다른 점수를 받는다.
-    · 가중치는 자질 사이 상관이 크면 흩어진다. 가중치 순위는 "판별에 쓰였다"의
-      약한 증거일 뿐, 자질 하나의 인과적 기여가 아니다.
-
-목적
-    사전선언 마감판을 그대로 구현한다(Q3). 계정 하나의 F·M·R 자질 250개로
-    봇과 사람을 얼마나 가를 수 있는지 잰다. 12-3 · 13이 읽을 고정 모델 한 벌을
-    저장한다.
-
-도구 넷
-    · 위치: 로지스틱 회귀. 자질 250개의 가중 합이 봇 쪽으로 얼마나 가 있는지를
-      확률로 낸다. 학습 fold에서 배운다(라벨 사용).
-    · 밀도: 채점 묶음 안에서 각 계정의 10번째 가까운 다른 계정까지 거리의 음수.
-      묶음 안 열 중앙값 대치 → 묶음 안 평균 순위 백분위 → 250자질 L1 평균 거리.
-      봇은 서로 닮아 이웃이 가깝고 사람은 흩어져 이웃이 멀다(10 동질성의 계정판).
-      라벨도 학습 중심도 쓰지 않는다. 그래서 겹이 필요 없고, BotSim에서는
-      1,024 묶음 전체에서 한 번 잰다. k = 5 · 20은 참고로만 적는다.
-    · 제안: 채점 묶음 안에서 위치 점수의 순위와 밀도 점수의 순위를 1:1로
-      평균한다. 확률(0~1)과 거리는 눈금이 달라 그대로 더할 수 없다. 순위로
-      바꾸면 둘 다 1~n 눈금이 된다. BotSim에서는 위치의 OOF 점수를 쓴다.
-    · 기준선: 랜덤 포레스트(나무 500). 표에 한 행으로만 둔다. 설명하지 않는다.
-
-왜 이렇게 하나
-    · 백분위 변환: F 사용률은 0~0.2, R 문장당 토큰수는 5~40이다. 눈금을
-      0~1로 맞추면 L2 규제가 자질마다 같은 무게로 걸린다. 변환 함수는 학습
-      fold에서만 만든다. 밀도의 백분위는 채점 묶음 안에서 새로 만든다(라벨 없음).
-    · 쌍 단위 fold: 매칭 쌍의 두 계정은 글 길이가 거의 같다. 쌍을 통째로 한
-      fold에 두면 길이 구조가 검증에 새지 않고 층화도 자동으로 된다.
-    · 문턱을 내부 5겹으로 고르는 이유: 검증 fold 점수로 문턱을 고르면 검증
-      fold의 라벨이 문턱에 쓰인다. 밀도 · 제안은 묶음 안 순위라 fold 문턱이
-      없다. 그 문턱은 1,024 묶음 위의 기술값(낙관적)으로만 적는다.
-    · 튜닝 없음 · 자질 선별 없음: C = 1.0, 나무 500, k = 10, 비중 1:1 고정.
-
-무엇을 따르나 (사전선언 3절)
-    1. 쌍 단위 5겹. 한 쌍의 두 계정은 같은 fold.
-    2. 학습 fold에서 자질별 백분위 변환 함수. 검증 fold는 그 함수에 통과,
-       범위 밖은 0 또는 1로 자른다.
-    3. [라벨 사용] 위치: 로지스틱 회귀. L2, C = 1.0, 절편, 클래스 가중 없음,
-       lbfgs, 최대 반복 1,000.
-    4. 밀도: 1,024 묶음 전체에서 한 번(라벨 없음).
-    5. 제안: 위치 OOF 점수와 밀도 점수의 묶음 안 순위 1:1 평균.
-    6. [라벨 사용] 기준선: 랜덤 포레스트. 나무 500, random_state 20260926.
-    7. 문턱: 위치 · 기준선은 학습 fold 안 내부 5겹 점수의 균형정확도 최대점.
-       밀도 · 제안은 1,024 묶음 위 기술값.
-    8. 고정 모델: 1,024 전부로 2 · 3 · 6을 한 번 더. 위치 문턱 = 본 교차검증 OOF
-       점수의 균형정확도 최대점, 제안 문턱 = 1,024 묶음 제안 점수의 균형정확도
-       최대점. 둘 다 BotSim 내부 기술값이다.
-
-자가검증 관문 (통과해야 본 계산에 들어간다)
-    관문 0    복사 함수 AST 대조: 보관 판 11 v2.1 · 14 · 12-3 · 13에서 옮긴 함수와 상수
-    관문 0-2  사전선언 예측 원문 대조
-    관문 1    손 예제(위치): 8계정(4쌍) × 4자질 (보관 판 그대로)
-    관문 1-2  손 예제(밀도 · 제안): 6계정 × 2자질, k = 2 (14 그대로) · 동점 순위 평균
-    관문 2    입력 정합: 1,024계정 · 기능어 172종 · 해시 · 자질 재현
-    관문 3    누설 교란: 검증 fold 값을 바꿔도 학습 산물이 비트 단위로 같은가
-    관문 4    라벨 뒤섞기: 가짜 라벨에서 위치 · 제안의 AUC가 0.45~0.55인가
-    관문 5    재현: 1,024 고정 로지스틱 계수 · 절편 == 보관 번들(e6b75865…) 비트 단위
-    관문 6    결정성: 같은 프로세스에서 한 번 더 계산해 결과 digest가 같은가
-
-구현 결정 (사전선언이 정하지 않은 자리. JSON 설정.구현결정에 같은 문장을 싣는다)
-    아래 IMPLEMENTATION_DECISIONS 상수를 보라.
-
-실행 안전
-    · 산출 셋(.json · _모델.joblib · _출력.log) 가운데 하나라도 있으면 --overwrite 없이는
-      시작하지 않는다.
-    · 산출은 이름 끝에 .partial을 붙여 쓰고, 끝까지 성공했을 때만 정본 이름으로 바꾼다.
-    · 중단하면 11_판별기_중단.json · 11_판별기_중단_출력.log에 쓴다.
-    · python -O(assert 꺼짐)로 실행하면 시작하지 않는다.
-
-실행
-    PYTHONDONTWRITEBYTECODE=1 /Users/son/.claude/venvs/audio-transcribe/bin/python -u 11_판별기.py
-    필요: numpy · scikit-learn · scipy · joblib.
-    읽기 전용 입력: 04_기능어측정.json · 04-1_확장재파싱.json · 01_적격계정.json
-    ("라벨" 키만) · 07_형태자질비교.json · 09_FMR 통제 재검증/입력코퍼스.json
-    · 09_FMR 통제 재검증/FMR_세통제_결과.json · 보관 판 11(번들 · JSON · 소스) ·
-    보관 판 14 · 12-3 · 13 소스(AST 대조용).
-
-산출 (이 파일과 같은 폴더에만 쓴다)
-    11_판별기.json · 11_판별기_모델.joblib · 11_판별기_출력.log
-"""
+"""BotSim: 쌍 단위 교차검증 로지스틱/RF, 평가 묶음 내 k=10 이웃 밀도, 순위 1:1 결합. 최종 규칙. 실행은 저장소 run.sh를 사용한다."""
 
 import argparse
 import ast
@@ -134,8 +43,6 @@ SCRIPT_PATH = nfc(os.path.abspath(__file__))
 HERE = os.path.dirname(SCRIPT_PATH)
 STEP = HERE
 ROOT = os.path.dirname(STEP)
-ARCHIVE = os.path.join(ROOT, "# 07-12 실행분 보관 (미학습)",
-                       "2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)")
 FMR_DIR = os.path.join(STEP, "09_FMR 통제 재검증")
 
 MEASURE_JSON = os.path.join(STEP, "04_기능어측정.json")        # 04: 원카운트
@@ -147,11 +54,6 @@ FMR_JSON = os.path.join(FMR_DIR, "FMR_세통제_결과.json")       # 쌍 · 축
 PREDECL_MD = os.path.join(STEP, "11_판별기_사전선언.md")
 
 # 보관 판(읽기 전용): AST 대조 원본 · 재현 관문의 번들과 JSON
-SOURCES = {"11": os.path.join(ARCHIVE, "11_판별기.py"), "14": os.path.join(ARCHIVE, "14_이웃밀도.py"),
-           "12-3": os.path.join(ARCHIVE, "12-3_판별기ver2.py"), "13": os.path.join(ARCHIVE, "13_fox8전이.py")}
-OLD_BUNDLE = os.path.join(ARCHIVE, "11_판별기_모델.joblib")
-OLD_J11 = os.path.join(ARCHIVE, "11_판별기.json")
-OLD_BUNDLE_SHA = "e6b75865381dfeaa23e68dc0da0107bf10934b7c672bc5426cc65b9ffeb1e9b3"
 OLD_ROW_POS, OLD_ROW_BASE = "위치(전부)", "기준선"   # 보관 판의 행 이름(재현 대조에만 쓴다)
 
 OUT_BASE = "11_판별기"
@@ -162,7 +64,7 @@ OUT_ABORT = os.path.join(HERE, "11_판별기_중단.json")
 OUT_ABORT_LOG = os.path.join(HERE, "11_판별기_중단_출력.log")
 PARTIAL = ".partial"            # 산출은 이 꼬리를 붙여 쓰고 성공하면 떼어 낸다
 INPUT_FILES = [MEASURE_JSON, REPARSE_JSON, ACCOUNTS_JSON, FEATURE_JSON,
-               CORPUS_JSON, FMR_JSON, PREDECL_MD, OLD_BUNDLE, OLD_J11, *SOURCES.values()]
+               CORPUS_JSON, FMR_JSON, PREDECL_MD]
 
 SEED = 20260926
 N_OUTER = 5
@@ -379,39 +281,7 @@ RK_DENS = np.array([1.5, -2.0, 3.0, 0.0, -2.0])
 RK_EXPECT = [0.875, 0.1875, 0.8125, 0.5625, 0.0625]
 
 # 관문 0이 원본과 AST를 대조하는 복사본 표. 값은 SOURCES의 열쇠다.
-COPY_FUNCS = {
-    "say": "11", "line": "11", "label_use": "11", "write_json": "11", "sha256_file": "11", "fnum": "11",
-    "axis_of": "11", "build_axis_map": "11", "f_rates": "11", "m_ratios": "11", "upos_ratios": "11",
-    "rhythm": "11", "build_matrix": "11", "fit_prep": "11", "apply_prep": "11", "fit_lr": "11",
-    "sigmoid": "11", "rates_at": "11", "balanced_accuracy": "11", "choose_threshold": "11",
-    "tpr_at_fpr": "11", "metrics": "11", "make_folds": "11", "fit_rf": "11", "close": "11",
-    "gate_hand": "11", "u_stat": "11", "rf_same": "11",
-    "check": "14", "ranks": "14", "density": "14", "canonical": "14", "digest": "14",
-    "func_ast": "12-3", "jsonable": "12-3", "boot_counts": "12-3", "cmp_matrix": "12-3",
-    "boot_auc": "12-3", "ci95": "12-3",
-    "auc_boot": "13", "paired_diff": "13",
-}
-COPY_CONSTS = {
-    "SEED": "11", "N_OUTER": "11", "N_INNER": "11", "LR_PARAMS": "11", "FPR_TARGETS": "11",
-    "FUNCWORD_HASH": "11", "N_ACCOUNTS_ALL": "11", "N_PAIRS": "11", "BLOCK_SIZES": "11",
-    "MIN_SENTENCES_CV": "11", "RATE_DIGITS": "11", "RF_PARAMS": "11", "PROPOSAL_WEIGHTS": "11",
-    "NAN": "11", "HAND_X": "11", "HAND_Y": "11", "HAND_P_EXPECT": "11", "HAND_MEDIAN_EXPECT": "11",
-    "HAND_IMPUTE_EXPECT": "11", "HAND_W": "11", "HAND_B": "11", "HAND_SCORE_EXPECT": "11",
-    "HAND_BA_AT_HALF": "11", "HAND_THRESH_FIXED": "11", "THR_SCORES": "11", "THR_Y": "11",
-    "THR_EXPECT": "11", "TIE_SCORES": "11", "TIE_EXPECT": "11", "HAND_TOL": "11",
-    "RK_POS": "11", "RK_EXPECT": "11", "N_BOOT": "12-3", "CEILING": "12-3",
-}
 # 보관 판에서 고친 함수(대조하지 않는다. 고친 까닭은 D18과 각 docstring)
-ADAPTED_FUNCS = {
-    "rank_mean": "보관 판 11: 둘째 인자 이름을 s_spread → s_dens로 바꿈(식은 같음)",
-    "load_and_gate": "보관 판 11: 옛 예측 P11-4용 머리 10종 키 확인을 뺌",
-    "fit_all": "보관 판 11: 소거 5행 · 퍼짐 · 보조 행을 빼고 위치 · 기준선만 적합",
-    "score_fold": "보관 판 11 score_all: 위치 · 기준선만 채점(밀도 · 제안은 묶음 단위라 따로)",
-    "fold_fit": "보관 판 11: 위치 · 기준선만",
-    "run_cv": "보관 판 11: 위치 · 기준선만, 퍼짐 제외 기록을 뺌",
-    "gate_leak_perturb": "보관 판 11: 중심 · 퍼짐 비교를 뺌",
-    "gate_label_shuffle": "보관 판 11: 제안 = 뒤섞기 위치 OOF + 밀도(라벨 없음)",
-}
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -1029,53 +899,6 @@ def run_cv(X, y, units, seed, label_note, with_base=True, record_detail=True, ve
 # ════════════════════════════════════════════════════════════════════════
 # [관문 0] 복사 함수 · 상수 AST 대조, 사전선언 예측 원문
 # ════════════════════════════════════════════════════════════════════════
-def gate_copies():
-    """복사한 함수 · 상수가 원본 소스와 같은가(D18). 원본은 읽기만 한다. import 하지 않는다."""
-    me = open(SCRIPT_PATH, encoding="utf-8").read()
-    my_tree = ast.parse(me)
-    top_funcs = [n.name for n in my_tree.body if isinstance(n, ast.FunctionDef)]
-    my_assign = {n.targets[0].id: n for n in my_tree.body
-                 if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)}
-    cache = {}
-
-    def src(k):
-        if k not in cache:
-            t = open(SOURCES[k], encoding="utf-8").read()
-            cache[k] = (t, ast.parse(t))
-        return cache[k]
-
-    res = {"함수": {}, "상수": {}, "고친함수": ADAPTED_FUNCS}
-    for name, k in COPY_FUNCS.items():
-        t, _ = src(k)
-        a, b = func_ast(me, name), func_ast(t, name)
-        ok = a is not None and a == b and top_funcs.count(name) == 1
-        res["함수"][name] = {"원본": os.path.basename(SOURCES[k]), "AST일치": ok}
-        if not ok:
-            say(f"      ■ 함수 {name} ← {os.path.basename(SOURCES[k])} 불일치")
-    for name, k in COPY_CONSTS.items():
-        _, tree = src(k)
-        node = None
-        for n in tree.body:
-            if (isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)
-                    and n.targets[0].id == name):
-                node = n
-        mine = my_assign.get(name)
-        ok = node is not None and mine is not None and ast.dump(node.value) == ast.dump(mine.value)
-        res["상수"][name] = {"원본": os.path.basename(SOURCES[k]), "AST일치": ok}
-        if not ok:
-            say(f"      ■ 상수 {name} ← {os.path.basename(SOURCES[k])} 불일치")
-    n_f = sum(r["AST일치"] for r in res["함수"].values())
-    n_c = sum(r["AST일치"] for r in res["상수"].values())
-    by_src = {}
-    for name, k in COPY_FUNCS.items():
-        by_src.setdefault(os.path.basename(SOURCES[k]), []).append(name)
-    for s_, names in by_src.items():
-        say(f"      {s_:<18} 함수 {len(names)}개: {', '.join(names)}")
-    say(f"      함수 {n_f}/{len(COPY_FUNCS)} · 상수 {n_c}/{len(COPY_CONSTS)} AST 일치 · 고친 함수 "
-        f"{len(ADAPTED_FUNCS)}개(대조 안 함: {', '.join(ADAPTED_FUNCS)})")
-    res["원본_sha256"] = {k: sha256_file(p) for k, p in SOURCES.items()}
-    ok = all(r["AST일치"] for g in ("함수", "상수") for r in res[g].values())
-    return res, ok
 
 
 def gate_predecl_text():
@@ -1434,49 +1257,6 @@ def say_table(table, diffs):
 # ════════════════════════════════════════════════════════════════════════
 # [관문 5] 재현: 고정 로지스틱 == 보관 번들
 # ════════════════════════════════════════════════════════════════════════
-def gate_reproduce(fx, cv, ids, thr_pos):
-    """
-    1,024 고정 로지스틱의 계수 · 절편이 보관 번들과 비트 단위로 같은가(판정). 번들은 sha256을
-    대조한 뒤에만 연다(joblib은 pickle이다. 보관 판 11이 쓴 자체 산출물이다). 나머지는 기록.
-    """
-    line("[관문 5] 재현: 1,024 고정 로지스틱 계수 · 절편 == 보관 번들(e6b75865…)")
-    sha_old = sha256_file(OLD_BUNDLE)
-    check(sha_old == OLD_BUNDLE_SHA, "보관 번들 sha256이 기록과 다르다. 열지 않는다.")
-    old = joblib.load(OLD_BUNDLE)
-    j_old = json.load(open(OLD_J11, encoding="utf-8"))
-    model, prep = fx["model"], fx["prep"]
-    res = {"보관번들_sha256": sha_old,
-           "계수250_비트일치": bool(np.array_equal(model.coef_[0], old["coef"])
-                               and np.array_equal(model.coef_, old["model"].coef_)),
-           "절편_비트일치": bool(float(model.intercept_[0]) == old["intercept"]
-                             and np.array_equal(model.intercept_, old["model"].intercept_))}
-    info = {
-        "백분위함수_중앙값_비트일치": bool(all(np.array_equal(prep["xp"][j], old["percentile_xp"][j])
-                                         and np.array_equal(prep["fp"][j], old["percentile_fp"][j])
-                                         for j in range(len(prep["xp"])))
-                                     and np.array_equal(prep["median"], old["impute_raw_median"])),
-        "랜덤포레스트_나무구조_일치": bool(rf_same(fx["rf"]["model"], old["rf"])),
-        "위치문턱_일치": thr_pos == old["thresholds"][OLD_ROW_POS],
-        "위치문턱_차": thr_pos - old["thresholds"][OLD_ROW_POS],
-        "train_ids_일치": list(old["train_ids"]) == list(ids),
-        "fold배정_일치": all(int(cv["fold_of"][i]) == j_old["fold배정"]["계정"][u] for i, u in enumerate(ids)),
-        "위치_OOF점수_불일치수": sum(1 for i, u in enumerate(ids)
-                                if cv["oof"][ROW_POS][i] != j_old["OOF점수"][OLD_ROW_POS][u]),
-        "위치_OOF점수_최대차": float(max(abs(cv["oof"][ROW_POS][i] - j_old["OOF점수"][OLD_ROW_POS][u])
-                                  for i, u in enumerate(ids))),
-        "기준선_OOF점수_불일치수": sum(1 for i, u in enumerate(ids)
-                                 if cv["oof"][ROW_BASE][i] != j_old["OOF점수"][OLD_ROW_BASE][u]),
-        "위치_OOF_AUC_보관": j_old["여덟행표"][OLD_ROW_POS]["OOF"]["AUC"],
-        "기준선_OOF_AUC_보관": j_old["여덟행표"][OLD_ROW_BASE]["OOF"]["AUC"],
-        "위치_fold문턱_일치": all(info_["문턱"][ROW_POS] == old_["문턱"][OLD_ROW_POS]
-                             for info_, old_ in zip(cv["fold_info"], j_old["fold별"]["fold정보"])),
-    }
-    del old
-    for k, v in {**res, **info}.items():
-        say(f"  {k:<28} {v}")
-    ok = res["계수250_비트일치"] and res["절편_비트일치"]
-    say(f"  → 재현 관문 {'통과' if ok else '■ 실패'} (판정은 계수 · 절편, 나머지는 기록)")
-    return ok, {**res, "기록": info, "통과": ok}
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -1536,11 +1316,7 @@ def main(argv=None):
         f"실행 파일 {sys.executable}")
 
     t = time.time()
-    line("[관문 0] 복사 함수 · 상수 AST 대조 (보관 판 11 v2.1 · 14 · 12-3 · 13) · 사전선언 예측 원문")
-    copy_res, copy_ok = gate_copies()
-    gates["관문0_복사대조"] = {**copy_res, "통과": copy_ok}
-    if not copy_ok:
-        stop("복사한 함수 · 상수가 원본 소스와 다릅니다.")
+    # 과거 판 소스/모델 대조는 배포 회귀검사로 분리했다.
     pd_res, pd_ok = gate_predecl_text()
     gates["관문0-2_사전선언원문"] = {**pd_res, "통과": pd_ok}
     if not pd_ok:
@@ -1620,11 +1396,6 @@ def main(argv=None):
     say("  위치 가중치 절댓값 상위 20 (+ 봇 쪽 · − 사람 쪽)")
     for tt in top20:
         say(f"    {tt['순위']:>2}. {tt['블록']:<4} {tt['자질']:<22} {tt['가중치']:+.4f}")
-    ok_rep, rep = gate_reproduce(fx, cv, ids, thr_pos)
-    gates["관문5_재현"] = rep
-    if not ok_rep:
-        stop("1,024 고정 로지스틱 계수 · 절편이 보관 번들과 비트 단위로 다릅니다(같은 자료 · 같은 설정).")
-
     bundle = {
         "설명": ("11 판별기 마감판 고정 모델. 12-3 · 13은 이 파일만 읽는다(score_bundle 복사본). "
                  "원값 x(feature_order 순서, 결측 NaN) → NaN을 impute_raw_median으로 채움 → 자질 j마다 "
@@ -1750,8 +1521,7 @@ def main(argv=None):
             "스크립트_sha256": sha256_file(SCRIPT_PATH),
             "라벨사용": ("쌍 구성 확인 · 자질 재현 대조 · 로지스틱 · 랜덤 포레스트 학습 · 문턱 선택 · 지표 · 부트스트랩 층 · "
                          "라벨 뒤섞기. 밀도는 라벨을 쓰지 않는다"),
-            "보관판": {"폴더": os.path.relpath(ARCHIVE, ROOT), "번들_sha256": OLD_BUNDLE_SHA,
-                       "관계": "밀도 도구가 보관 판의 중심 거리(퍼짐) 도구를 대체했다(연구자 결정 2026-09-27)."},
+            "방법변경": "최종 판별기는 중심 거리가 아닌 묶음 내 이웃 밀도를 사용한다.",
         },
         "관문": gates,
         "자질": {"순서": [[b, k] for b, k in feat_names],

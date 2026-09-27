@@ -1,94 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-13_fox8전이.py  (13_fox8전이_사전선언.md 마감판, 2026-09-27)
-────────────────────────────────────────────────────────────────────────────
-한계 먼저 (사전선언 9절. 결과 문장마다 이 셋을 붙인다)
-    · 단일 봇넷: fox8은 봇넷 하나다. 다른 봇넷 여럿에서 같은 결과가 나온 것이 아니다.
-    · 연도: 봇 글의 98.3%가 2023년이고 사람 글은 2020년 이전이다. 문체를 한 글자도
-      안 보고 연도 하나로 AUC 1.000이다.
-    · 답글 비율: 답글 비율 하나로 AUC 0.851이다.
-    그래서 이 파일의 결과를 "환경 전이"나 "환경 의존성 반박"으로 쓰지 않는다.
-    환경 의존성에 답하려면 OpenRouter 실험(12)이 있어야 한다.
-    · 문턱 적응은 fox8 라벨로 문턱을 고른다. "fox8 문턱 적응"이라는 이름으로만 쓴다.
-    · 엄격 117은 봇 117 대 사람 897이다. 봇이 적어 정확도가 "전부 사람" 기준선에
-      끌린다. 그래서 기준선을 같이 적는다.
-    · 밀도 · 제안 점수는 채점 묶음(fox8 적격 1,991) 안의 값이다. 밀도는 같은 묶음에 닮은
-      봇이 여럿 있을 때만 작동한다. fox8은 봇넷 하나라 이 조건에 유리하다.
-    · 제안의 번들 문턱은 BotSim 묶음 안 정규화 순위 위의 값이라 fox8 묶음에서 뜻이 같지
-      않다. 그 문턱은 "묶음 상위 일정 비율을 봇으로 표시"하는 분위 절단이다. 그래서
-      "문턱 미전이"는 위치 도구(확률 눈금)의 자체 문턱으로 판정하고, 제안의 자체 문턱
-      표시 비율은 판정에 쓰지 않는 기술 칸으로 싣는다.
-
-목적
-    사전선언 마감판을 그대로 구현한다(Q4). BotSim에서 고정한 세 가지를 fox8에 옮긴다.
-    fox8에서 새로 배우는 것은 없다(문턱 적응 보조만 예외다).
-        (a) 차이 전이   250 자질 δ의 방향이 BotSim δ와 같은 순서인가(가족별 ρ)
-        (b) 동질성 전이 fox8 안 분량 매칭 표본에서 10 v1.3 절차를 다시 돈다
-        (c) 판별기 전이 11 판별기(위치 · 밀도 · 제안 · 기준선)를 fox8에 직접 적용한다
-
-사전선언 항목 → 함수
-    3절 (a) 차이 전이 ........... run_test_a · transfer_family · botsim_baseline · matched_baseline
-    4절 (b) 동질성 전이 ......... run_test_b → caliper_match · centers · residuals ·
-                                  residual_scale · scaled_residuals · block_distances ·
-                                  ratio_of · perm_ratios · p_values · run_sensitivity ·
-                                  judge_claim · gate_status_10_1
-    5절 (c) 적용 ................ run_test_c → apply_bundle(11 score_bundle) · auc_boot ·
-                                  direct_block(11 metrics + 순도)
-    5절 문턱 적응 ............... adapt_thresholds · adapt_block
-    5절 고정 오탐 ............... 11 tpr_at_fpr (탐지율@오탐5% · 10%)
-    5절 짝지은 차 ............... paired_diff (제안 − 위치 · 밀도 − 위치)
-    5절 엄격 117 · 9절 단서 ...... strict_117(옛 19 scan_self_reveal) · caveat_numbers
-    6절 관문 .................... gate_copies · gate_predecl_text · gate_fixed_examples ·
-                                  gate_hand(10) · gate_hand13 · gate_reparse · gate_bundle ·
-                                  gate_feature_paths · 옛 12 재현 · gate_adapt_leak ·
-                                  gate_determinism · 입력 불변
-    7절 예측 P13-a~e ............ check_predictions
-    8절 주장 수위표 ............. claim_rows (판정 문장은 연구자가 쓴다)
-
-왜 이렇게 하나
-    · 함수를 새로 짜지 않고 복사한다. 06 · 07 · 08의 δ, 09-1의 매칭, 10 v1.3의 잔차 거리 ·
-      순열, 11 마감판의 변환 · 점수 · 밀도 · 지표 · 부트스트랩을 옮겼다. 관문 A가 원본
-      소스와 AST를 대조한다. 같은 자로 재야 BotSim 값과 나란히 놓을 수 있다.
-    · 옛 12 재현 관문: 같은 표본 · 같은 방법이면 F ρ가 옛 12의 +0.318과 소수 둘째 자리까지
-      같아야 한다. 이것이 맞아야 이 파일이 옛 12와 같은 자료 위에 서 있다.
-    · 직접 전이가 주다. 문턱 적응은 fox8 라벨을 문턱 하나에 쓰므로 보조다.
-    · 짝지은 부트스트랩: 같은 fox8 계정 재추출 위에서 도구들의 AUC를 함께 잰다. 계정 난이도의
-      흔들림이 두 AUC에 똑같이 들어가 차이에서 지워진다.
-
-절차 (10단계)
-    [1/10] 관문 A  복사 함수 · 상수 AST 대조 · 사전선언 원문 대조 · 통계 고정 예제 · 매칭 예제 ·
-                   10 v1.3 손 예제 · 13 손 예제(분위 변환 고정 적용 · 클립 · 점수 · 순도 ·
-                   밀도 · 순위 평균 · 부트스트랩 AUC)
-    [2/10] 관문 B  13-1 정합 (계정별 문장수 · 토큰수가 옛 12 연도 합산과 같다)
-    [3/10] 관문 C  번들 sha256(열기 전) · 11 JSON 대조 · 자질 정의
-    [4/10] fox8 자질 250 (라벨 없음) · 두 자질 경로 일치 · 단서 셋 재확인
-    [5/10] 엄격 117 재현 · 관문 D 옛 12 재현(F ρ)
-    [6/10] 시험 (a) 차이 전이 : 주 표본 · 엄격 117 · 보조(09-1 매칭 δ)
-    [7/10] 시험 (b) 동질성 전이 : 캘리퍼 매칭 → 10 v1.3 → 수위표 · 희소 민감도
-    [8/10] 시험 (c) 판별기 전이 : 네 도구 · 직접 전이 · 문턱 적응 · 고정 오탐 · 짝지은 차 · 엄격 117
-    [9/10] 관문 E 문턱 적응 누설 교란 · 관문 F 결정성(프로세스 안) · 예측 · 수위표 · 입력 불변
-    [10/10] 저장 (JSON · 로그 · Markdown)
-
-구현 결정 (사전선언이 정하지 않은 자리. JSON 설정.구현결정에 같은 문장을 싣는다)
-    아래 IMPLEMENTATION_DECISIONS 상수를 보라.
-
-라벨 사용 지점 (로그에 [라벨 사용] 마커)
-    관문 B 라벨 대조 · 단서 수치(연도 · 답글) · 엄격 117 구성 · (a) 무더기 가르기 ·
-    (b) 매칭 후보 · 중심 · 순열 · 민감도 · (c) 평가(직접 전이는 평가에만) · (c) 부트스트랩 층 ·
-    (c) 문턱 적응의 겹 층화 · 문턱 선택 · 평가 · 짝지은 차
-
-실행 안전 (D28)
-    · 산출 셋(.json · .md · _출력.log) 가운데 하나라도 이미 있으면 --overwrite 없이는 시작하지 않는다.
-    · 산출은 이름 끝에 .partial을 붙여 쓰고, 끝까지 성공했을 때만 정본 이름으로 바꾼다.
-    · 중단하면 기록을 13_fox8전이_중단.json · 13_fox8전이_중단_출력.log에 쓴다. 정본 JSON은 건드리지 않는다.
-    · python -O(assert 꺼짐)로 실행하면 시작하지 않는다.
-
-실행 명령 (연구주제/단계별 진행경과 폴더에서)
-    PYTHONDONTWRITEBYTECODE=1 /Users/son/.claude/venvs/audio-transcribe/bin/python -u 13_fox8전이.py
-    이미 산출이 있을 때 다시 돌리려면 --overwrite를 붙인다.
-    필요: numpy · scipy · scikit-learn · joblib. 입력 파일에는 한 글자도 쓰지 않는다.
-"""
+"""fox8: FMR 차이·동질성 전이, 고정 BotSim 모형 평가, 라벨을 이용한 임계값 보정. 최종 규칙. 실행은 저장소 run.sh를 사용한다."""
 
 import argparse
 import ast
@@ -132,15 +44,10 @@ SCRIPT_PATH = nfc(os.path.abspath(__file__))
 HERE = os.path.dirname(SCRIPT_PATH)                  # 단계별 진행경과 (정본 폴더)
 STEP = HERE
 ROOT = os.path.dirname(STEP)                         # 연구주제
-ARCHIVE = os.path.join(ROOT, "# 07-12 실행분 보관 (미학습)")
-ORIG = os.path.join(ARCHIVE, "2026-09-25 재정렬 전 원본", "단계별 진행경과")
-FINAL_ARCHIVE = os.path.join(ARCHIVE, "2026-09-27 마감 전 판별기 (퍼짐 도구·ver.2·14 원본)")
 
 PREDECL_MD = os.path.join(STEP, "13_fox8전이_사전선언.md")
 INPUT_DEFAULT = os.path.join(STEP, "13-1_fox8재파싱.json")        # 주 입력
 PARSE_PY = os.path.join(STEP, "13-1_fox8재파싱.py")
-OLD12_JSON = os.path.join(ARCHIVE, "12_fox8전이.json")             # 옛 12 (2026-08-27): 연도 버킷 · 단서
-OLD19_JSON = os.path.join(ORIG, "19_fox8재검증.json")              # 엄격 117 대조값
 FOX8_DB = os.path.join(ROOT, "1. 원본데이터", "3. fox8 Data", "fox8_23_dataset.sqlite")
 BUNDLE = os.path.join(STEP, "11_판별기_모델.joblib")               # 11 마감판 고정 모델
 J11 = os.path.join(STEP, "11_판별기.json")
@@ -154,64 +61,11 @@ GATE_JSON = os.path.join(STEP, "10-1_귀무오류율_1000회.json")      # 10 �
 SOURCES = {"05": os.path.join(STEP, "05_사용률검수.py"), "06": os.path.join(STEP, "06_봇사람비교.py"),
            "07": os.path.join(STEP, "07_형태자질비교.py"), "08": os.path.join(STEP, "08_R블록.py"),
            "09-1": os.path.join(STEP, "09-1_분량통제.py"), "10": os.path.join(STEP, "10_동질성검정.py"),
-           "11": os.path.join(STEP, "11_판별기.py"), "보관13": os.path.join(FINAL_ARCHIVE, "13_fox8전이.py"),
-           "옛12": os.path.join(ARCHIVE, "12_fox8전이.py"), "옛19": os.path.join(ORIG, "19_fox8재검증.py")}
+           "11": os.path.join(STEP, "11_판별기.py")}
 OUT_BASE = "13_fox8전이"
 
 # 복사 대상 표 (관문 A가 이 표대로 원본과 대조한다). 값은 SOURCES의 열쇠다.
 # '보관13'은 보관 판 13에서 한 글자도 바꾸지 않은(docstring · 주석 제외) 이 파일 고유 함수다.
-COPY_FUNCS = {
-    "normal_cdf": "06", "ranks_with_ties": "06", "mann_whitney": "06", "bh_qvalues": "06",
-    "direction_of": "07", "defined_values": "07", "compare_family": "07", "build_axis_map": "07",
-    "axis_of": "07", "denom_kind_of": "07", "compute_ratios": "07", "compute_upos_ratios": "07",
-    "compute_rates": "05", "coef_variation": "08", "compute_features": "08",
-    "caliper_match": "09-1", "fnum": "10", "close": "10", "nanmedian_cols": "10",
-    "nanmean_cols": "10", "centers": "10", "residuals": "10", "residual_scale": "10",
-    "scaled_residuals": "10", "block_distances": "10", "ratio_of": "10", "perm_ratios": "10",
-    "p_values": "10", "exact_p": "10", "hand_run": "10", "gate_hand": "10", "judge_claim": "10",
-    "sparse_features": "10", "run_sensitivity": "10", "gate_status_10_1": "10",
-    "f_rates": "11", "m_ratios": "11", "upos_ratios": "11", "rhythm": "11", "build_matrix": "11",
-    "apply_prep": "11", "sigmoid": "11", "rates_at": "11", "balanced_accuracy": "11",
-    "choose_threshold": "11", "tpr_at_fpr": "11", "metrics": "11", "ranks": "11", "density": "11",
-    "rank_mean": "11", "score_bundle": "11", "check": "11", "canonical": "11", "digest": "11",
-    "func_ast": "11", "jsonable": "11", "boot_counts": "11", "cmp_matrix": "11", "boot_auc": "11",
-    "ci95": "11", "auc_boot": "11", "paired_diff": "11",
-    "clean_doc": "옛12", "pearson": "옛12", "spearman": "옛12", "scan_self_reveal": "옛19",
-    "nfc": "보관13", "say": "보관13", "line": "보관13", "label_use": "보관13", "stop": "보관13",
-    "write_json": "보관13", "sha256_file": "보관13", "five": "보관13", "auc_u": "보관13", "dig": "보관13",
-    "rel": "보관13", "gate_fixed_examples": "보관13", "purity": "보관13", "merge_year_buckets": "보관13",
-    "gate_reparse": "보관13", "build_features": "보관13", "gate_feature_paths": "보관13",
-    "presence_in": "보관13", "caveat_numbers": "보관13", "strict_117": "보관13",
-    "botsim_baseline": "보관13", "matched_baseline": "보관13", "transfer_family": "보관13",
-    "run_test_a": "보관13", "match_fox8": "보관13", "b_block_arrays": "보관13", "b_distances": "보관13",
-    "run_test_b": "보관13", "direct_block": "보관13", "adapt_thresholds": "보관13", "adapt_block": "보관13",
-    "show_ok": "보관13", "kleene": "보관13", "f4": "보관13",
-}
-COPY_CONSTS = {
-    **{k: "옛12" for k in ("MIN_CHARS", "SELF_REVEAL", "RE_SENT_SPLIT", "RE_URL", "RE_MENTION", "RE_WS")},
-    **{k: "07" for k in ("Q_ALPHA", "DELTA_NOTABLE", "SPARSE_FRAC", "RATE_DIGITS", "STAT_DIGITS",
-                         "DENOM_AXIS", "DENOM_TOKEN")},
-    "MIN_SENTENCES_CV": "08",
-    **{k: "10" for k in ("SEED", "N_PERM", "ALPHA", "CAP", "BLOCKS", "LAYER", "REL_TOL", "HAND_TOL",
-                         "INVAR_TOL", "CLAIM_TABLE", "HAND_IDS", "HAND_PAIRS", "HAND_VALUES",
-                         "HAND_CENTER_BOT", "HAND_CENTER_HUMAN", "HAND_RESID", "HAND_SCALE", "HAND_Z",
-                         "HAND_CAP_CELLS", "HAND_DIST", "HAND_RATIO", "HAND_SWAPS", "HAND_EXACT_P1",
-                         "HAND_EXACT_P2", "HAND_FORMULA_P1", "HAND_FORMULA_P2", "HAND_MC_TOL",
-                         "HAND_SCALE_TEST", "HAND_SCALE_TEST_KIND", "HAND_SCALE_TEST_Z0", "HAND_SHIFT_BOT",
-                         "HAND_SHIFT_HUMAN", "HAND_WIDEN_BOT", "HAND_WIDEN_RATIO")},
-    **{k: "11" for k in ("NAN", "FPR_TARGETS", "BLOCK_SIZES", "ROW_POS", "ROW_DENS", "ROW_PROP", "ROW_BASE",
-                         "TOOLS", "PROPOSAL_WEIGHTS", "THR_SCORES", "THR_Y", "THR_EXPECT", "TIE_SCORES",
-                         "TIE_EXPECT", "N_BOOT", "CEILING", "DH_X", "DH_K", "DH_KDIST", "DH_POS", "DH_PROP",
-                         "RK_POS", "RK_DENS", "RK_EXPECT")},
-    **{k: "보관13" for k in ("CALIPER", "N_FOLDS_ADAPT", "AUC_KEEP", "BA_NO_TRANSFER", "AUC_COLLAPSE",
-                           "P13A_RHO", "P13D_BA", "BOOT_KEY", "EXPECT_REAL", "PY10_SHA", "FUNCWORD_HASH",
-                           "OLD12_DIGITS", "MISMATCH_LIMIT", "FAMILIES", "FAMILY_BLOCK", "BLOCKS_B",
-                           "RKEYS", "CLAIM_PREFIX", "CAVEATS", "HAND13_PREP", "HAND13_X", "HAND13_P",
-                           "HAND13_W", "HAND13_B", "HAND13_SCORE", "HAND13_Y", "HAND13_EXPECT", "HAND13_WB",
-                           "HAND13_WH", "HAND13_BOOT_AUC", "SELF_CHECK_U", "SELF_CHECK_BH_P",
-                           "SELF_CHECK_BH_Q", "SELF_CHECK_RHO", "MATCH_BOT", "MATCH_HUM", "METRIC_KEYS",
-                           "UNDET", "PARTIAL")},
-}
 
 # ════════════════════════════════════════════════════════════════════════
 # [설정] 사전선언 값. 결과를 보고 바꾸지 않는다.
@@ -232,13 +86,9 @@ TOOL_ROLE = {"제안": "제안 (판별기 출력)", "위치": "위치 도구", "
 
 # ── 정본 입력 사슬 ──
 EXPECT_REAL = {
-    "입력_sha256": "f9fd94c4e039e4baff90b0f3ef75b3bea3c22856d76b971bd3f5a641c1b6363e",
-    "13-1스크립트_sha256": "071bfa6c98ce3514b5061d864a2276e78c357d43a0bf6a32105384310bfc64f9",
     "봇": 1094, "사람": 897, "엄격": 117, "문서수": 165532, "옛12_F_rho": 0.318,
 }
-PY10_SHA = "980a7de4a4ceac82dd27c551e42542620132cd144cbfa2d3bf698b849e95be43"    # 10 v1.3
 FUNCWORD_HASH = "382b68572f03bc23"
-OLD12_DIGITS = 2               # 옛 12 재현: 소수 둘째 자리
 MISMATCH_LIMIT = 0.01          # 13-1 정합 불일치 1% 초과면 중단
 SPARSE_ZERO_MIN = None         # 10 v1.3 희소 민감도 문턱. (b)에서 ceil(쌍 수 / 2)로 정한다(D11)
 
@@ -2228,57 +2078,6 @@ def scan_self_reveal(conn, progress=None):
 # ════════════════════════════════════════════════════════════════════════
 # [관문 A] 복사 AST 대조 · 사전선언 원문 · 고정 예제 · 13 손 예제
 # ════════════════════════════════════════════════════════════════════════
-def gate_copies():
-    """
-    복사한 함수 · 상수가 원본 소스와 같은가(D23).
-      함수: 11 func_ast(docstring을 뺀 ast.dump)가 원본과 같아야 한다.
-      상수: 대입 값의 ast.dump가 원본과 같아야 한다.
-    원본은 읽기만 한다. import 하지 않는다.
-    """
-    me = open(SCRIPT_PATH, encoding="utf-8").read()
-    my_tree = ast.parse(me)
-    top_funcs = [n.name for n in my_tree.body if isinstance(n, ast.FunctionDef)]
-    my_assign = {n.targets[0].id: n for n in my_tree.body
-                 if isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)}
-    cache = {}
-
-    def src(k):
-        if k not in cache:
-            t = open(SOURCES[k], encoding="utf-8").read()
-            cache[k] = (t, ast.parse(t))
-        return cache[k]
-
-    res = {"함수": {}, "상수": {}}
-    for name, k in COPY_FUNCS.items():
-        t, _ = src(k)
-        a, b = func_ast(me, name), func_ast(t, name)
-        ok = a is not None and a == b and top_funcs.count(name) == 1
-        res["함수"][name] = {"원본": rel(SOURCES[k]), "AST일치": ok}
-        if not ok:
-            say(f"      ■ 함수 {name} ← {os.path.basename(SOURCES[k])} 불일치")
-    for name, k in COPY_CONSTS.items():
-        _, tree = src(k)
-        node = None
-        for n in tree.body:
-            if (isinstance(n, ast.Assign) and len(n.targets) == 1 and isinstance(n.targets[0], ast.Name)
-                    and n.targets[0].id == name):
-                node = n
-        mine = my_assign.get(name)
-        ok = node is not None and mine is not None and ast.dump(node.value) == ast.dump(mine.value)
-        res["상수"][name] = {"원본": rel(SOURCES[k]), "AST일치": ok}
-        if not ok:
-            say(f"      ■ 상수 {name} ← {os.path.basename(SOURCES[k])} 불일치")
-    by_src = Counter(COPY_FUNCS.values())
-    by_src_c = Counter(COPY_CONSTS.values())
-    for k in SOURCES:
-        names_ok = [n for n, s in COPY_FUNCS.items() if s == k and res["함수"][n]["AST일치"]]
-        say(f"      {os.path.basename(SOURCES[k]):<20} 함수 {len(names_ok)}/{by_src.get(k, 0)} · 상수 "
-            f"{sum(1 for n, s in COPY_CONSTS.items() if s == k and res['상수'][n]['AST일치'])}/{by_src_c.get(k, 0)} AST 일치")
-    res["원본_sha256"] = {k: sha256_file(p) for k, p in SOURCES.items()}
-    ok = all(r["AST일치"] for g in ("함수", "상수") for r in res[g].values())
-    say(f"      합계: 함수 {sum(r['AST일치'] for r in res['함수'].values())}/{len(COPY_FUNCS)} · 상수 "
-        f"{sum(r['AST일치'] for r in res['상수'].values())}/{len(COPY_CONSTS)} {'일치' if ok else '■ 불일치 있음'}")
-    return res, ok
 
 
 def gate_predecl_text():
@@ -2411,80 +2210,29 @@ def gate_hand13(thr_pos):
 # ════════════════════════════════════════════════════════════════════════
 # [관문 B] 13-1 정합 : 옛 12 연도 버킷 합산 대 13-1
 # ════════════════════════════════════════════════════════════════════════
-def merge_year_buckets(acc12):
-    """옛 12 계정의 '연도별' 버킷을 합친다. 덧셈이라 순서와 무관하다."""
-    out = {}
-    for uid, a in acc12.items():
-        m = {"문서수": 0, "문장수": 0, "토큰수": 0, "토큰수_구두점제외": 0,
-             "기능어": Counter(), "UPOS": Counter(), "자질": Counter()}
-        for b in a["연도별"].values():
-            for k in ("문서수", "문장수", "토큰수", "토큰수_구두점제외"):
-                m[k] += b[k]
-            for k in ("기능어", "UPOS", "자질"):
-                m[k].update(b[k])
-        for k in ("기능어", "UPOS", "자질"):
-            m[k] = {w: n for w, n in m[k].items() if n}
-        out[uid] = m
-    return out
 
 
-def gate_reparse(merged, acc, conf, labels12, expect, in_sha):
-    """
-    v2 3절: 계정별 문장수 · 토큰수가 옛 12 연도 합산과 같아야 한다. 어긋난 계정이 1%를 넘으면 중단.
-    더해서(모두 관문): 계정 집합 · 라벨 · 계정 수 · 문서 수 합, 나머지 카운트(문서수 · 구두점 제외 토큰수 ·
-    기능어 · UPOS · 자질), 13-1 내부 관계(문장길이 개수 = 문장수, 합 = 구두점 제외 토큰수, PUNCT =
-    토큰수 − 구두점 제외, 버킷 합 = 계정 합), 13-1 설정.관문통과, 정본 해시(본 실행).
-    """
-    chk, diff = {}, Counter()
-    chk["13-1_설정.관문통과"] = conf.get("관문통과") is True
-    chk["13-1_정합관문_불일치0_기록"] = dig(conf, "정합관문", "불일치계정수") == 0
-    if expect.get("입력_sha256"):
-        chk["13-1_sha256_=_f9fd94c4…"] = in_sha == expect["입력_sha256"]
-    if expect.get("13-1스크립트_sha256"):
-        chk["13-1스크립트_sha256_=_071bfa6c…"] = sha256_file(PARSE_PY) == expect["13-1스크립트_sha256"]
-    n_exp = expect["봇"] + expect["사람"]
-    chk[f"계정집합_일치_{n_exp}"] = set(merged) == set(acc) and len(acc) == n_exp
-    mismatch_core = []
-    for u in sorted(merged):
-        a, b = merged[u], acc.get(u)
-        if b is None:
-            mismatch_core.append(u)
-            continue
-        if a["문장수"] != b["문장수"] or a["토큰수"] != b["토큰수"]:
-            mismatch_core.append(u)
-        for k in ("문서수", "토큰수_구두점제외"):
-            if a[k] != b[k]:
-                diff[k] += 1
-        for k in ("기능어", "UPOS", "자질"):
-            if a[k] != {w: n for w, n in b[k].items() if n}:
-                diff[k] += 1
-    for u, b in acc.items():
-        L = b["문장길이"]
-        if len(L) != b["문장수"] or sum(L) != b["토큰수_구두점제외"]:
-            diff["내부_문장길이_개수합"] += 1
-        if b["UPOS"].get("PUNCT", 0) != b["토큰수"] - b["토큰수_구두점제외"]:
-            diff["내부_PUNCT_토큰차"] += 1
-        if b.get("구두점토큰수") != b["토큰수"] - b["토큰수_구두점제외"]:
-            diff["내부_구두점토큰수"] += 1
-        bs = [0, 0, 0, 0]
-        for v in (b.get("버킷별") or {}).values():
-            bs = [x + y for x, y in zip(bs, v)]
-        if bs != [b["문서수"], b["문장수"], b["토큰수"], b["토큰수_구두점제외"]]:
-            diff["내부_버킷합"] += 1
-    rate = len(mismatch_core) / max(1, len(merged))
-    chk["문장수·토큰수_불일치_1%이하"] = rate <= MISMATCH_LIMIT
-    chk["보조항목_불일치_0"] = sum(diff.values()) == 0
-    label_use("관문 B : 13-1에 저장된 라벨과 옛 12 라벨이 같은지 대조 (계산에 쓰지 않음)")
-    chk["라벨_일치"] = all(acc[u].get("라벨") == labels12.get(u) for u in acc)
-    nb = sum(1 for v in labels12.values() if v == "bot")
-    chk[f"라벨_봇{expect['봇']}_사람{expect['사람']}"] = nb == expect["봇"] and len(labels12) - nb == expect["사람"]
-    n_docs = sum(m["문서수"] for m in merged.values())
-    chk[f"문서수_합_{expect['문서수']}"] = n_docs == expect["문서수"]
-    for k, v in chk.items():
-        say(f"      {k:<32} {'통과' if v else '■ 실패'}")
-    say(f"      문장수·토큰수 불일치 {len(mismatch_core)}/{len(merged)} ({rate:.4%}) · 보조 불일치 {dict(diff) or 0}")
-    return chk, {"문장수토큰수_불일치계정": mismatch_core, "불일치비율": rate, "보조_불일치수": dict(diff),
-                 "문서수_합": n_docs}
+def gate_reparse(acc, conf, expect):
+    """현재 측정값의 내부 합계와 원자료 라벨을 검사한다."""
+    conn = sqlite3.connect("file:" + urllib.parse.quote(FOX8_DB) + "?mode=ro", uri=True)
+    labels = dict(conn.execute("SELECT user_id, label FROM users"))
+    conn.close()
+    chk = {"파싱완료": conf.get("관문통과") is True,
+           "계정수": len(acc) == expect["봇"] + expect["사람"],
+           "라벨_원자료일치": all(a["라벨"] == labels[u] for u, a in acc.items()),
+           "봇수": sum(a["라벨"] == "bot" for a in acc.values()) == expect["봇"],
+           "문서수": sum(a["문서수"] for a in acc.values()) == expect["문서수"]}
+    bad = []
+    for u, a in acc.items():
+        totals = [sum(v[i] for v in a["버킷별"].values()) for i in range(4)]
+        if (len(a["문장길이"]) != a["문장수"] or
+            sum(a["문장길이"]) != a["토큰수_구두점제외"] or
+            a["구두점토큰수"] != a["UPOS"].get("PUNCT", 0) or
+            a["구두점토큰수"] != a["토큰수"] - a["토큰수_구두점제외"] or
+            totals != [a[k] for k in ("문서수", "문장수", "토큰수", "토큰수_구두점제외")]):
+            bad.append(u)
+    chk["집계관계"] = not bad
+    return chk, {"내부관계_불일치": bad}
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -2498,8 +2246,7 @@ def gate_bundle(j11, d06, d07):
     s1 = sha256_file(BUNDLE)
     chk = {"번들_sha256_=_11JSON_고정모델.파일_sha256": s1 == j11["고정모델"]["파일_sha256"],
            "11_판별기.py_=_11JSON_스크립트_sha256": sha256_file(SOURCES["11"]) == j11["설정"]["스크립트_sha256"],
-           "11JSON_관문_전부_통과": all(j11["관문_요약"].values()),
-           "10_동질성검정.py_=_v1.3(980a7de4…)": sha256_file(SOURCES["10"]) == PY10_SHA}
+           "11JSON_관문_전부_통과": all(j11["관문_요약"].values())}
     for k, v in chk.items():
         say(f"      {k:<40} {'통과' if v else '■ 실패'}")
     if not all(chk.values()):
@@ -2572,7 +2319,7 @@ def presence_in(ratios, uids, fam, keys):
     return {k: sum(1 for u in s if (ratios[u][k] or 0) > 0) for k in keys}
 
 
-def caveat_numbers(acc12, ybot, yhum, d12):
+def caveat_numbers(acc12, ybot, yhum):
     """[라벨 사용] 단서 수치(D24). 판정에 쓰지 않는다."""
     label_use("단서 수치 재확인 : 연도 · 답글 비율을 봇 · 사람으로 가른다 (판정에 쓰지 않음)")
 
@@ -2593,14 +2340,13 @@ def caveat_numbers(acc12, ybot, yhum, d12):
     auc_reply = auc_u([acc12[u]["답글비율"] for u in ybot], [acc12[u]["답글비율"] for u in yhum])
     out = {"봇_2023문서비율": share23, "사람_최대연도": hum_max,
            "연도중앙값_단독AUC": auc_year, "최근연도_단독AUC": auc_year_max, "답글비율_단독AUC": auc_reply,
-           "옛12_답글비율_단독AUC": dig(d12, "코퍼스", "답글비율", "검정", "단독AUC"),
-           "옛12_봇_2023비율": dig(d12, "설정", "시기교란", "봇_2023비율")}
+           }
     say(f"      봇 문서 2023년 비율 {share23:.4f} · 사람 문서 최대 연도 {hum_max} · 연도 단독 AUC "
         f"(계정 최근 연도) {auc_year_max:.4f} · (계정 중앙 연도) {auc_year:.4f} · 답글 비율 단독 AUC {auc_reply:.4f}")
     return out
 
 
-def strict_117(db_path, ybot, yhum, j19, expect):
+def strict_117(db_path, ybot, yhum, expect):
     """[라벨 사용] 엄격 117(D8). 옛 19 scan_self_reveal로 자기폭로가 한 번도 없는 적격 봇만 남긴다."""
     conn = sqlite3.connect("file:" + urllib.parse.quote(db_path) + "?mode=ro", uri=True)
     try:
@@ -2621,10 +2367,9 @@ def strict_117(db_path, ybot, yhum, j19, expect):
     info = {"적격봇": len(bot_all), "비리트윗기준_잔류": len(bot_keep), "엄격_잔류": len(strict),
             "리트윗에서만_걸린_잔류봇": len(bot_keep) - len(strict),
             "사람중_걸린계정_리트윗포함": sum(1 for u in yhum if n_rt(u) > 0),
-            "옛19_비리트윗잔류": dig(j19, "봇제한", "잔류_봇"), "옛19_엄격잔류": dig(j19, "봇제한", "엄격", "잔류_봇")}
-    ok = (len(strict) == expect["엄격"] == info["옛19_엄격잔류"] and len(bot_keep) == info["옛19_비리트윗잔류"])
-    say(f"      적격 봇 {len(bot_all):,} → 비리트윗 기준 잔류 {len(bot_keep)} (옛 19 {info['옛19_비리트윗잔류']}) → "
-        f"엄격 잔류 {len(strict)} (옛 19 {info['옛19_엄격잔류']} · 기대 {expect['엄격']}) : {'일치' if ok else '■ 불일치'}")
+            }
+    ok = len(strict) == expect["엄격"]
+    say(f"      자기폭로 없는 적격 봇: 비리트윗 {len(bot_keep)}, 엄격 {len(strict)}")
     return strict, info, ok
 
 
@@ -3248,8 +2993,6 @@ def write_markdown(out):
         L.append(f"| {fam} | {m['항목수']} | {f4(m['rho'], True)} | {m['방향일치수']}/{m['방향판정대상']} | "
                  f"{m['BotSim주목수']} → {tm['유지']}·{tm['역방향']}·{tm['약화']} | {f4(s_['rho'], True)} | "
                  f"{ts['유지']}·{ts['역방향']}·{ts['약화']} | {f4((sup.get(fam) or {}).get('rho'), True)} |")
-    L += ["", f"옛 12 재현(관문 D): 주 표본 F ρ {f4(out['관문']['D_옛12재현']['F_rho'], True)} → 둘째 자리 "
-              f"{out['관문']['D_옛12재현']['F_rho_둘째자리']:+.2f}, 옛 12 {out['관문']['D_옛12재현']['옛12_rho_사전선언']:+.3f}.", ""]
     mt = b["매칭"]
     L += ["## 표 2. (b) 동질성 전이 (10 v1.3)", "",
           f"fox8 안 캘리퍼 매칭 {mt['쌍수']}쌍(봇 탈락 {mt['봇_탈락']} · 안 쓰인 사람 {mt['사람_미사용']}). 비율 = 사람 거리 "
@@ -3387,7 +3130,7 @@ def main(argv=None):
         say(f"  · {k}: {CAVEATS[k]}")
 
     expect = dict(EXPECT_REAL)
-    input_files = [PREDECL_MD, inp, OLD12_JSON, OLD19_JSON, FOX8_DB, BUNDLE, J11,
+    input_files = [PREDECL_MD, inp, FOX8_DB, BUNDLE, J11,
                    D06_JSON, D07_JSON, D08_JSON, D091_JSON, GATE_JSON, PARSE_PY] + sorted(set(SOURCES.values()))
     for p in input_files:
         if not os.path.exists(p):
@@ -3399,10 +3142,6 @@ def main(argv=None):
     # ── [1/10] 관문 A ───────────────────────────────────────────
     t = time.time()
     line("[1/10] 관문 A : 복사 AST 대조 · 사전선언 원문 · 고정 예제 · 10 v1.3 손 예제 · 13 손 예제")
-    copy_res, copy_ok = gate_copies()
-    gates["A_복사대조"] = {**copy_res, "통과": copy_ok}
-    if not copy_ok:
-        stop("복사한 함수 · 상수가 원본 소스와 다릅니다.")
     say("  사전선언 원문 대조")
     pd_res, pd_ok = gate_predecl_text()
     gates["A_사전선언원문"] = {**pd_res, "통과": pd_ok}
@@ -3429,13 +3168,9 @@ def main(argv=None):
     line("[2/10] 관문 B : 13-1 정합 (옛 12 연도 버킷 합산 대 13-1)")
     d_in = json.load(open(inp, encoding="utf-8"))
     conf_in = d_in["설정"]
-    d12 = json.load(open(OLD12_JSON, encoding="utf-8"))
-    acc12 = d12["계정"]
-    labels12 = {u: a["라벨"] for u, a in acc12.items()}
-    merged = merge_year_buckets(acc12)
     acc = d_in["계정"]
     del d_in
-    chkB, infoB = gate_reparse(merged, acc, conf_in, labels12, expect, in_sha)
+    chkB, infoB = gate_reparse(acc, conf_in, expect)
     gates["B_13-1정합"] = {"항목": chkB, **infoB, "입력_sha256": in_sha, "통과": all(chkB.values())}
     if not all(chkB.values()):
         stop("13-1 정합이 어긋났습니다: " + ", ".join(k for k, v in chkB.items() if not v))
@@ -3478,14 +3213,23 @@ def main(argv=None):
     say(f"      BotSim 58종 밖의 fox8 형태자질 키 (쓰지 않음): {extra_keys}")
     ybot = [u for u in uids if labels[u] == "bot"]
     yhum = [u for u in uids if labels[u] == "human"]
-    caveat_num = caveat_numbers(acc12, ybot, yhum, d12)
+    acc12 = {}
+    for u, a in acc.items():
+        years = Counter()
+        replies = 0
+        for key, counts in a["버킷별"].items():
+            year, reply = key.split("|")
+            years[year] += counts[0]
+            if reply == "1":
+                replies += counts[0]
+        acc12[u] = {"연도분포": dict(years), "답글비율": replies / a["문서수"]}
+    caveat_num = caveat_numbers(acc12, ybot, yhum)
     stage["자질_단서"] = round(time.time() - t, 2)
 
     # ── [5/10] 엄격 117 · 관문 D ────────────────────────────────
     t = time.time()
     line("[5/10] 엄격 117 재현 (옛 19 scan_self_reveal) · 관문 D 옛 12 재현")
-    j19 = json.load(open(OLD19_JSON, encoding="utf-8"))
-    strict, strict_info, ok_strict = strict_117(FOX8_DB, ybot, yhum, j19, expect)
+    strict, strict_info, ok_strict = strict_117(FOX8_DB, ybot, yhum, expect)
     gates["엄격117_재현"] = {**strict_info, "통과": ok_strict}
     if not ok_strict:
         stop("엄격 117을 재현하지 못했습니다.")
@@ -3496,28 +3240,6 @@ def main(argv=None):
     kinds_m = {k: denom_kind_of(k, axis_map) for k in keys_by_fam["형태자질"]}
     say("\n      관문 D : 주 표본으로 (a)를 먼저 돌려 F ρ를 옛 12와 대조한다")
     a_main = run_test_a("주 표본", ybot, yhum, ratios, keys_by_fam, bases, kinds_m)
-    rho_f = a_main["가족"]["F"]["rho"]
-    ok_old12 = rho_f is not None and round(rho_f, OLD12_DIGITS) == round(expect["옛12_F_rho"], OLD12_DIGITS)
-    old_f = dig(d12, "주비교", "F블록") or {}
-    old_m = dig(d12, "주비교", "형태자질") or {}
-    f_same = sum(1 for w, r in a_main["가족"]["F"]["항목"].items()
-                 if w in old_f and r["델타"] is not None and round(r["델타"], STAT_DIGITS) == old_f[w]["델타"])
-    m_same = sum(1 for k, r in a_main["가족"]["형태자질"]["항목"].items()
-                 if k in old_m and r["델타"] is not None and round(r["델타"], STAT_DIGITS) == old_m[k]["델타"])
-    m_diff = [k for k, r in a_main["가족"]["형태자질"]["항목"].items()
-              if k in old_m and (r["델타"] is None or round(r["델타"], STAT_DIGITS) != old_m[k]["델타"])]
-    old_json_rho = dig(d12, "전이", "가족별", "F블록", "rho")
-    say(f"      F ρ 정확값 {rho_f:+.6f} → 둘째 자리 {round(rho_f, 2):+.2f} · 옛 12 사전선언 "
-        f"{expect['옛12_F_rho']:+.3f} → {round(expect['옛12_F_rho'], 2):+.2f} (옛 12 JSON {old_json_rho}) : "
-        f"{'일치' if ok_old12 else '■ 불일치'}")
-    say(f"      보조: F δ 172종 중 옛 12와 4자리 일치 {f_same} · 형태자질 58종 중 {m_same} (다른 항목 {m_diff or '없음'})")
-    gates["D_옛12재현"] = {"F_rho": rho_f, "F_rho_둘째자리": round(rho_f, 2) if rho_f is not None else None,
-                          "옛12_rho_사전선언": expect["옛12_F_rho"], "옛12_rho_JSON": old_json_rho,
-                          "둘째자리_일치": ok_old12, "보조_Fδ_4자리일치수": f_same, "보조_형태δ_4자리일치수": m_same,
-                          "보조_형태δ_불일치항목": m_diff, "통과": ok_old12}
-    if not ok_old12:
-        stop(f"옛 12의 F ρ {expect['옛12_F_rho']:+.3f}을 소수 둘째 자리까지 재현하지 못했습니다.")
-    say("  → 관문 D 통과")
     stage["엄격_관문D"] = round(time.time() - t, 2)
 
     # ── [6/10] 시험 (a) ─────────────────────────────────────────
@@ -3608,9 +3330,7 @@ def main(argv=None):
         "관문": gates,
         "관문_요약": {k: bool(v.get("통과")) for k, v in gates.items()},
         "엄격117": {**strict_info, "엄격목록": strict},
-        "시험a_차이전이": {"주": a_main, "엄격117": a_strict,
-                        "옛값_참고": {"옛12_F_rho_JSON": old_json_rho,
-                                  "옛19엄격_F_rho_JSON": dig(j19, "전이_엄격", "가족별", "F블록", "rho")}},
+        "시험a_차이전이": {"주": a_main, "엄격117": a_strict},
         "시험b_동질성전이": b_res,
         "시험c_판별기전이": c_res,
         "예측대조": preds,

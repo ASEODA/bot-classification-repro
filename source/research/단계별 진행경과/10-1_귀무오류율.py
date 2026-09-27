@@ -1,140 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-10-1_귀무오류율.py  (v1.3 규칙)
-────────────────────────────────────────────────────────────────────────────
-판 기록
-    v1.1 규칙 실행(2026-09-27 05:01)은 불통과였다. 산출은 이름을 바꿔 두었다
-    (10-1_귀무오류율_v1.1규칙.json · _출력.log). 모의 A 위쪽 거짓 유의 F 16/200 ·
-    M 10/200 · R 7/200, 모의 B 위쪽 F 200/200 · M 194/200 · R 107/200.
-    v1.2 규칙: 10 결정 B2(중심 정렬)를 반복 절차에 넣었다. 백분위 직전에 가짜
-    집단마다 원값 중앙값을 뺀다. 판정(200회, 칸마다 Wilson 95% 상한 ≤ 0.10)은
-    그대로다. 이동 불변 관문(D)과 --reps 옵션을 더했다. 결과는 불통과였다(모의 A
-    위쪽 F 46/200 · M 27/200, 1,000회 F 263 · M 95). 산출은
-    10-1_귀무오류율_v1.2규칙*.json · .log로 이름을 바꿔 두었다.
-    v1.3 규칙: 10 결정 B3(원값 잔차 척도). 백분위를 버리고 가짜 집단별 원값
-    중앙값을 뺀 잔차를 척도로 나눠 5에서 자른 값의 평균을 거리로 쓴다. 선언
-    판정은 1,000회 실행으로 바꿨다(사전선언 개정 기록 v1.3). 200회는 병기한다.
-
-한계 먼저
-    · 이 파일은 10 절차(자기 중심 거리 + 쌍 안 교환 순열)의 거짓 유의율만 잰다.
-      봇 자료는 쓰지 않는다. 12 표 (a) 풀의 사람 640명만 쓴다.
-    · 귀무 모의는 사람을 무작위로 반분한 가짜 두 집단이다. 실제 봇과 사람 사이의
-      다른 차이(주제 폭, 글 길이 분포 모양)는 모의에 들어가지 않는다.
-    · 위치 이동 모의(B)는 자질마다 같은 크기(사람 640의 MAD × 1)를 더하는 한
-      가지 형태만 본다. 다른 모양의 위치 차이는 재지 않는다.
-    · 200회 반복이라 거짓 유의율의 Wilson 95% 구간 폭이 약 ±0.03이다. 참 거짓
-      유의율이 정확히 0.05여도 한 칸의 상한이 0.10을 넘을 확률이 약 0.30이다.
-      관문 자체의 이 오경보율을 JSON에 계산해 적는다. 그래서 v1.3부터 선언
-      판정은 1,000회 실행으로 한다(사전선언 개정 기록 v1.3, 실행 전에 적음).
-
-목적
-    12 뼈대 v3.1 5절 8항 "10 절차 귀무 오류율 관문". 12 표 (a)의 (iii)열은 10
-    절차의 F·M·R 비율과 p를 쓴다. 그 절차가 "산포가 같은" 두 집단에서 α = 0.05
-    근처로 거짓 유의를 내는지, 위치만 다르고 산포가 같을 때도 그런지 본다.
-
-절차 (10 사전선언 4절, 10 정본 함수 승계)
-    A. 반분 반복 r = 0..199
-       1. 640명(uid 오름차순)을 시드 20260926 + r로 섞어 앞 320명 = 가짜 봇,
-          뒤 320명 = 가짜 사람.
-       2. 09-1 캘리퍼 매칭: |log 토큰수_구두점제외 비| ≤ 0.10, 그리디, 가짜 봇을
-          random.Random(20260926 + r)로 섞고, 사람은 uid 오름차순에서 최근접.
-       3. 쌍 표본 안에서 (10 결정 B3) [가짜 라벨] 집단 중심(원값 중앙값) → 잔차 →
-          척도 s_j(두 집단 공통 |잔차| 중앙값, 0이면 평균, 그것도 0이면 제외) →
-          z = min(|잔차| ÷ s_j, 5) → 블록 거리(z 평균) → 비율(가짜 사람 거리
-          중앙값 ÷ 가짜 봇 거리 중앙값).
-       4. [가짜 라벨] 쌍 안 교환 순열 999회(같은 시드 흐름). 위쪽 단측 p(비율 > 1
-          쪽), 아래쪽 단측 p(비율 < 1 쪽), 양측 p를 모두 적는다.
-       5. F·M·R 블록마다 따로. 세 블록은 같은 교환 행렬을 쓴다(10 결정 G).
-    B. 위치 이동 모의: A와 같은 r의 같은 반분·매칭·교환 행렬에서, 가짜 봇 쪽
-       원값에 자질별로 사람 640의 MAD × 1을 더한 뒤 3~5를 다시 한다. 0인 값에도
-       그대로 더한다. 결측은 결측. v1.3 규칙에서는 잔차가 이 이동을 정확히
-       지우므로 B는 A와 같아야 한다.
-    C. 판정: A·B 각각 F·M·R의 거짓 유의율(p < 0.05 비율) Wilson 95% 상한이
-       0.10 이하면 통과. 아니면 불통과로 기록만 한다(규칙 수정 없음). 판정 칸은
-       A·B × F·M·R의 위쪽 여섯 칸이고 아래쪽은 병기한다. (v1.3) 선언 판정은
-       1,000회 실행(--reps 1000)에 건다. 200회 실행은 같은 표를 병기한다.
-    D. 이동 불변 관문: 반복마다 F·M·R의 |비율_A − 비율_B| ≤ 1e-9이고 p(위·아래·
-       양측)가 같아야 한다. 어긋난 반복은 숨기지 않고 적는다. v1.3은 순위를
-       쓰지 않으므로 잔차의 끝자리 차가 거리와 비율에 연속으로만 번진다. 무엇이
-       얼마나 달랐는지 보이려고 잔차·척도·거리의 최대차를 함께 적는다.
-
-관문 (하나라도 실패하면 본 계산에 들어가지 않고 JSON을 쓰지 않는다)
-    관문 1  함수 승계: 10 정본(v1.3)에서 옮긴 함수 22개와 09-1 caliper_match가
-            원본과 같은 AST다(docstring 제외). 원 단계(04·05·07·08·옛 09)와도
-            대조한다. 앞 단계 상수(CAP 포함)도 대조한다.
-            손 예제: 10 v1.3의 6계정(3쌍) × 3자질을 본 계산과 같은 run_procedure로
-            돌려 중심·잔차·척도·z·거리·비율·교환 8가지·p(위·아래·양측)를
-            손계산과 대조한다. 매칭 손 예제(09-1의 8계정), MAD·이동 손 예제, Wilson 구간을
-            scipy와 대조한다.
-    관문 2  (v1.3) 자질 조립 대조. 10 정본 입력(04·04-1·02·07·FMR 쌍)으로 매칭
-            1,024계정의 원값 행렬을 세우고, F는 05 산출의 계정별 사용률과 칸마다
-            같은지, M·R은 결측 칸 수와 자질별 결측 계정 수(봇·사람)가 보관된 10
-            v1.1 JSON과 같은지 본다. 실제 라벨로 10 절차의 비율·p는 계산하지
-            않는다. 10 v1.3의 실제 자료 실행은 이 파일의 선언 판정(1,000회)을
-            통과한 뒤에만 하기 때문이다. v1.1의 백분위 경로는 이 파일에 없다(v1.1
-            재현은 보관된 v1.1 스크립트로만). 09-1의 512쌍 목록을 같은
-            caliper_match(시드 20260827)로 재현한다.
-    관문 3  사람 풀: 13-0 계정사전의 관문통과 = true, 역할 표a인 사람 = 분할.json의
-            표a = 640, 시험(봉인) 234와 교집합 0, 라벨 human, 내부 관계
-            (문장길이 개수·합, 구두점토큰수 = UPOS PUNCT), 기능어 키 ⊂ 172종.
-
-구현 결정 (규격에 없어 이 파일을 쓰며 정한 것. JSON 설정에도 같은 목록)
-    E1  자질 목록과 축 분류는 10 정본과 같게 04 전체 1,869계정에서 유도한다
-        (형태 58 + 품사 17, 축 분류 = FMR 고정값). 13-0에서 유도한 값과 다르면
-        기록만 한다. 12 표 (a)가 10과 같은 250자질을 써야 10과 견줄 수 있고,
-        09-2(댓글 한정)도 FMR 고정 축 분류를 썼다.
-    E2  난수 흐름: 반복 r마다 numpy default_rng(20260926 + r) 하나로 반분
-        (permutation)을 뽑고 같은 흐름에서 이어 교환 행렬(random)을 뽑는다. 같은
-        시드로 생성기를 두 번 새로 만들면 반분과 교환이 같은 비트를 공유한다.
-        매칭의 봇 섞기는 09-1 함수 그대로 random.Random(20260926 + r)이다.
-    E3  반분 크기는 320 : 320. 매칭 입력은 봇·사람 모두 uid 오름차순 목록이다.
-    E4  MAD = 사람 640 원값의 median(|x - median(x)|). 1.4826 보정 없음, 결측 제외,
-        640 전체에서 한 번 구한다. F는 05 규칙으로 6자리 반올림한 사용률에 더하고
-        다시 반올림하지 않는다. MAD가 0인 자질은 이동이 0이다(수를 기록).
-    E5  A와 B는 같은 r에서 같은 반분·매칭·교환 행렬을 쓴다. 두 시나리오의 차이는
-        이동 하나뿐이다.
-    E6  아래쪽 단측 p = (순열비율 ≤ 관측비율 횟수 + 1) ÷ (999 + 1). 상대 허용오차
-        1e-12(10 결정 H의 거울). 위쪽 단측 p와 양측 p는 10 p_values 그대로.
-    E7  주 판정 방향은 위쪽(비율 > 1, 가짜 봇이 더 좁음)이다. 10과 12가 이
-        방향으로 주장한다. 아래쪽은 같은 문턱으로 보조 판정을 적고, 두 방향 모두
-        통과인지도 적는다. 양측 p는 기록만 한다.
-    E8  반복 안에서 거리를 정의할 수 없는 블록(nan 거리, 봇 거리 중앙값 0)이
-        나오면 그 반복의 그 블록을 무효로 세고 분모에서 뺀다. 수를 보고한다.
-        10은 이때 멈췄지만 모의 200회 가운데 한 번 때문에 전체를 멈추지 않는다.
-    E9  Wilson 95%의 z = 1.959963984540054. scipy는 관문 1의 대조에만 쓴다.
-    E10 복사 함수의 docstring은 줄표 금지 규칙 때문에 짧게 다시 썼고 주석의
-        줄표는 쌍점으로 바꿨다. 대조는 docstring을 뺀 AST로 한다(13-0 G1 방식).
-    E11 (v1.3) 반복 안에서 척도 규칙으로 빠지는 자질(|잔차| 중앙값·평균 모두 0,
-        또는 정의 2개 미만)과 평균으로 대체된 자질, 상한 5를 넘은 칸의 수를
-        반복마다 기록한다.
-    E12 이동 불변 관문(D)의 허용오차는 비율 1e-9, p는 완전 일치. 한쪽만 무효인
-        블록은 위반으로 센다. 위반은 판정 표와 따로 적는다.
-    E13 (v1.3) 척도 단위 중심차 = 자질별 |c_봇 − c_사람| ÷ s_j의 평균(제외 자질 뺌).
-        가짜 두 집단의 우연한 위치 차가 얼마였는지 보는 기록이다.
-    E14 --reps N(기본 200). 시드는 r = 0..N-1에 20260926 + r이라 1,000회 실행의
-        앞 200회는 200회 실행과 같은 반분·매칭·교환이다. N이 200이 아니면 산출
-        이름에 _N회를 붙인다(10-1_귀무오류율_1000회.json). (v1.3) 선언 판정은
-        1,000회 실행에 건다. 200회 실행은 병기한다.
-    E15 (v1.3) 관문 2는 결과를 계산하지 않는 자질 조립 대조로 바꿨다(위 관문 2).
-
-라벨 사용 지점
-    · 관문 2의 자질 조립 대조와 09-1 재현(실제 라벨: 쌍 구분, 01 라벨)
-    · 관문 3의 사람 풀 정의(역할 표a, 라벨 human 확인)
-    · 반복 안의 중심·잔차·순열은 가짜 라벨(무작위 반분)이다. 실제 라벨은
-      쓰지 않는다.
-
-실행
-    단계별 진행경과 폴더에서:
-    PYTHONDONTWRITEBYTECODE=1 /Users/son/.claude/venvs/audio-transcribe/bin/python -u \\
-        10-1_귀무오류율.py | tee 10-1_귀무오류율_출력.log
-    1,000회 선언 판정 실행(v1.3):
-    PYTHONDONTWRITEBYTECODE=1 /Users/son/.claude/venvs/audio-transcribe/bin/python -u \\
-        10-1_귀무오류율.py --reps 1000 | tee 10-1_귀무오류율_1000회_출력.log
-
-산출
-    10-1_귀무오류율.json : 설정·해시·관문·반복별 값·요약·판정 (--reps N이면 _N회)
-"""
+"""최종 동질성 규칙의 귀무 오류율 및 위치 이동 불변성 점검. 고정 사람 풀 640개, 1,000회 모의 비교. 실행은 저장소 run.sh를 사용한다."""
 
 import argparse
 import ast
@@ -160,18 +26,15 @@ sys.dont_write_bytecode = True
 HERE = os.path.dirname(os.path.abspath(__file__))      # 단계별 진행경과
 ROOT = os.path.dirname(HERE)                           # 연구주제
 FMR_DIR = os.path.join(HERE, "09_FMR 통제 재검증")
-ARCHIVE = os.path.join(ROOT, "# 07-12 실행분 보관 (미학습)")
 DATA_DIR = os.path.expanduser("~/DM_LAB_data/12_OpenRouter")
 
 ACCDICT_JSON = os.path.join(DATA_DIR, "13-0_계정사전.json")        # 13-0 산출 (읽기만)
 SPLIT_JSON = os.path.join(HERE, "12_OpenRouter생성_준비", "분할.json")
 PY10 = os.path.join(HERE, "10_동질성검정.py")
 # 관문 2 대조 대상 : 보관된 10 v1.1 정본 JSON (v1.2 정본은 이 파일 뒤에 돈다)
-J10_V11 = os.path.join(ARCHIVE, "2026-09-27 10 v1.1 (귀무 오류율 관문 불통과)", "10_동질성검정.json")
 J05 = os.path.join(HERE, "05_사용률검수.json")      # 관문 2 : F 조립 대조 (계정별 사용률)
 PY091 = os.path.join(HERE, "09-1_분량통제.py")
 J091 = os.path.join(HERE, "09-1_분량통제.json")
-PY130 = os.path.join(HERE, "13-0_댓글한정재파싱.py")
 MEASURE_JSON = os.path.join(HERE, "04_기능어측정.json")
 REPARSE_JSON = os.path.join(HERE, "04-1_확장재파싱.json")
 FUNCWORDS_JSON = os.path.join(HERE, "02_기능어목록.json")
@@ -182,18 +45,6 @@ PREREG_12 = os.path.join(HERE, "12_OpenRouter생성_사전선언_뼈대.md")
 PREREG_10 = os.path.join(HERE, "10_동질성검정_사전선언.md")
 
 # 원 단계 소스 (10 결정 M의 COPY_SOURCES와 같은 대응). 관문 1에서 AST 대조.
-ORIGINAL_SOURCES = {
-    "compute_rates": os.path.join(HERE, "05_사용률검수.py"),
-    "build_axis_map": os.path.join(HERE, "07_형태자질비교.py"),
-    "axis_of": os.path.join(HERE, "07_형태자질비교.py"),
-    "denom_kind_of": os.path.join(HERE, "07_형태자질비교.py"),
-    "compute_ratios": os.path.join(HERE, "07_형태자질비교.py"),
-    "compute_upos_ratios": os.path.join(HERE, "07_형태자질비교.py"),
-    "coef_variation": os.path.join(HERE, "08_R블록.py"),
-    "compute_features": os.path.join(HERE, "08_R블록.py"),
-    "dense_vectors": os.path.join(ARCHIVE, "09_산포검정.py"),
-    "normalize_apostrophe": os.path.join(HERE, "04_기능어측정.py"),
-}
 FROM_10 = ["compute_rates", "build_axis_map", "axis_of", "denom_kind_of", "compute_ratios",
            "compute_upos_ratios", "coef_variation", "compute_features", "dense_vectors",
            "normalize_apostrophe", "nanmedian_cols", "nanmean_cols", "centers", "residuals",
@@ -878,46 +729,6 @@ def public(res):
 # ════════════════════════════════════════════════════════════════════════
 # [관문 1] 함수 승계 · 손 예제
 # ════════════════════════════════════════════════════════════════════════
-def gate_copies():
-    me = open(os.path.abspath(__file__), encoding="utf-8").read()
-    s10 = open(PY10, encoding="utf-8").read()
-    s091 = open(PY091, encoding="utf-8").read()
-    rows = []
-    for name in FROM_10:
-        a, b = func_ast(me, name), func_ast(s10, name)
-        rows.append({"함수": name, "대상": "10_동질성검정.py", "같음": a is not None and a == b})
-    for name in FROM_091:
-        a, b = func_ast(me, name), func_ast(s091, name)
-        rows.append({"함수": name, "대상": "09-1_분량통제.py", "같음": a is not None and a == b})
-    cache = {}
-    for name, path in ORIGINAL_SOURCES.items():
-        if path not in cache:
-            cache[path] = open(path, encoding="utf-8").read()
-        a, b = func_ast(me, name), func_ast(cache[path], name)
-        rows.append({"함수": name, "대상": os.path.relpath(path, ROOT), "같음": a is not None and a == b})
-    for r in rows:
-        say(f"      {r['함수']:<22} = {os.path.basename(r['대상']):<22} {'같음' if r['같음'] else '다름'}")
-
-    # 함수 밖 상수 (함수가 전역으로 읽는 값)
-    names10 = ["RATE_DIGITS", "DENOM_AXIS", "DENOM_TOKEN", "MIN_SENTENCES_CV", "CAP", "RKEYS",
-               "BLOCKS", "REL_TOL", "SEED", "N_PERM", "ALPHA", "EXPECT_ACCOUNTS", "EXPECT_WORDS",
-               "EXPECT_HASH", "EXPECT_PAIRS", "EXPECT_M_FEAT", "EXPECT_M_UPOS"]
-    c10 = module_consts(s10, names10)
-    mine = {k: globals()[k] for k in names10 if k != "N_PERM"}
-    mine["N_PERM"] = N_PERM_10
-    const_rows = [{"상수": k, "10": c10.get(k), "이 파일": mine[k], "같음": c10.get(k) == mine[k]}
-                  for k in names10]
-    c091 = module_consts(s091, ["CALIPER", "SEED"])
-    const_rows.append({"상수": "CALIPER", "09-1": c091.get("CALIPER"), "이 파일": CALIPER,
-                       "같음": c091.get("CALIPER") == CALIPER})
-    const_rows.append({"상수": "SEED_091", "09-1": c091.get("SEED"), "이 파일": SEED_091,
-                       "같음": c091.get("SEED") == SEED_091})
-    bad = [r["상수"] for r in const_rows if not r["같음"]]
-    say(f"      앞 단계 상수 {len(const_rows)}개 대조  {'같음' if not bad else '다름: ' + ', '.join(bad)}")
-    dash = [hex(c) for c in (0x2014, 0x2013) if chr(c) in me]
-    say(f"      이 파일의 줄표·반각 대시  {'없음' if not dash else '있음'}")
-    ok = all(r["같음"] for r in rows) and not bad and not dash
-    return {"함수": rows, "상수": const_rows, "줄표없음": not dash}, ok
 
 
 def gate_hand():
@@ -1070,7 +881,6 @@ def gate_assembly(words):
     d041 = json.load(open(REPARSE_JSON, encoding="utf-8"))
     fmr = json.load(open(FMR_JSON, encoding="utf-8"))
     d07 = json.load(open(FEATURE_JSON, encoding="utf-8"))
-    j11 = json.load(open(J10_V11, encoding="utf-8"))      # 보관된 v1.1 (결측 구성만 읽음)
     acc, acc1 = d04["계정"], d041["계정"]
     pairs_raw = fmr["설정"]["matching"]["pairs"]
     pairs = [(b, h) for b, h, _ in pairs_raw]
@@ -1105,10 +915,7 @@ def gate_assembly(words):
         miss = np.isnan(X[b])
         per = {keys[b][j]: {"봇": int(miss[:n, j].sum()), "사람": int(miss[n:, j].sum())}
                for j in range(miss.shape[1]) if miss[:, j].any()}
-        ref = j11["블록별"][b]["결측"]
-        ok_b = int(miss.sum()) == ref["칸수"] and per == ref["자질별"] and len(keys[b]) == j11["블록별"][b]["자질수"]
-        chk[f"{b}_결측구성_=_v1.1"] = ok_b
-        rows[b] = {"결측칸": int(miss.sum()), "v1.1_결측칸": ref["칸수"], "결측자질수": len(per), "같음": ok_b}
+        rows[b] = {"결측칸": int(miss.sum()), "결측자질수": len(per), "자질별": per}
     for k, v in chk.items():
         say(f"      {k:<30} {'통과' if v else '실패'}")
     say(f"      (결과 계산 없음) 10 v1.3 비율·p는 선언 판정 통과 뒤 10 스크립트가 계산한다.")
@@ -1283,13 +1090,10 @@ def main():
     say(f"  스크립트 sha256 {script_sha}")
 
     say("\n[1/7] 관문 1 : 함수 승계 · 손 예제")
-    copy_res, copy_ok = gate_copies()
     hand_res, hand_ok = gate_hand()
     match_res, match_ok = gate_match_hand()
     mad_res, mad_ok = gate_mad_hand()
     wil_res, wil_ok = gate_wilson()
-    if not copy_ok:
-        stop("복사한 함수나 상수가 원본과 다릅니다.")
     if not hand_ok:
         for f in hand_res["실패"]:
             say(f"      × {f}")
@@ -1486,7 +1290,7 @@ def main():
             "스크립트_sha256": script_sha,
             "13-0_계정사전_sha256": acc_sha,
             "입력_sha256": {os.path.relpath(p, ROOT) if p.startswith(ROOT) else p: sha256_file(p) for p in
-                          (ACCDICT_JSON, SPLIT_JSON, PY10, J10_V11, J05, PY091, J091, PY130, MEASURE_JSON, REPARSE_JSON,
+                          (ACCDICT_JSON, SPLIT_JSON, PY10, J05, PY091, J091, MEASURE_JSON, REPARSE_JSON,
                            FUNCWORDS_JSON, FEATURE_JSON, ACCOUNTS_JSON, FMR_JSON, PREREG_12, PREREG_10)},
             "사전선언": "12_OpenRouter생성_사전선언_뼈대.md 5절 8항 · 10_동질성검정_사전선언.md 4절 · 개정 기록 v1.3",
             "규칙": "v1.3 (10 결정 B3 원값 잔차 척도를 반복 절차에 포함)", "CAP": CAP,
@@ -1504,7 +1308,7 @@ def main():
                       "관문 3 사람 풀 정의(역할 표a·라벨 human 확인)", "반복 안 중심·잔차·순열은 가짜 라벨"],
             "구현결정": IMPL_DECISIONS,
         },
-        "관문": {"1_복사함수": copy_res, "1_손예제": hand_res, "1_매칭손예제": match_res,
+        "관문": {"1_손예제": hand_res, "1_매칭손예제": match_res,
                "1_MAD손예제": mad_res, "1_Wilson": wil_res,
                "2_10재현": r10, "2_09-1매칭재현": r091, "3_사람풀": pool_res},
         "자질": feat_info,

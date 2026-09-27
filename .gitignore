@@ -1,6 +1,6 @@
 .venv*/
 .assets/
-.packaging/
+.packaging*/
 work/
 work-*/
 __pycache__/
