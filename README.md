@@ -43,6 +43,8 @@ bash run.sh full
 
 결과는 `work/validation/`에, 전량 실행은 `work-full/validation/`에 저장됩니다.
 
+2026-09-28 검증 완료: 새 다운로드 실행과 BotSim·fox8 원문 전량 재실행에서 핵심 수치 및 48개 상세 대조를 통과했습니다.
+
 **[연구 결과 요약](docs/RESULTS.md)** · [실험 순서와 코드](docs/PIPELINE.md) · [검증 상태](docs/VALIDATION.md)
 
 <details>

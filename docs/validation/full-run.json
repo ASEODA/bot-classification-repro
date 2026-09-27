@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "completed_at": "2026-09-28T00:46:21.256531+09:00",
+  "code_commit": "c6e2937615215ea82b5dfab5d47cf18381ae3684",
+  "platform": "macOS arm64 / Python 3.13.7",
+  "mode": "full",
+  "orchestration": "BotSim and fox8 full raw parsers ran concurrently; the packaged runner resumed the remaining steps. This was not a single uninterrupted bash run.sh full invocation.",
+  "no_BotSim_or_fox8_measurement_cache_inputs": true,
+  "OpenRouter": "Saved raw generations and fixed measured inputs; classifier application rerun. No API regeneration or reparsing.",
+  "initial_integrity": {
+    "files": 55,
+    "mismatches": [],
+    "passed": true,
+    "mode": "full"
+  },
+  "samples": {
+    "BotSim": {
+      "accounts": 1869,
+      "documents": 110057
+    },
+    "fox8": {
+      "accounts": 1991,
+      "documents": 165532
+    },
+    "comments": {
+      "accounts": 1436,
+      "documents": 68043
+    },
+    "politics": {
+      "accounts": 995,
+      "documents": 54621
+    }
+  },
+  "unit_tests_passed": 12,
+  "null_simulations": 1000,
+  "summary_comparison": {
+    "file": "result-comparison.json",
+    "passed": true,
+    "sha256": "924f151041719b2c20973e31d62b7c099af1556d82500949deb938ecd2881d9f"
+  },
+  "detailed_comparison": {
+    "file": "artifact-comparison.json",
+    "passed": true,
+    "checks": 48,
+    "sha256": "52e8b1ee857e27f93918592cb360ace029556cc21281014650ebbc03267f5a28",
+    "float_normalization_decimal_places": 10
+  },
+  "resume": {
+    "exit_code": 0,
+    "completed_steps_skipped": 20,
+    "summary_pass": true,
+    "detail_pass": true
+  },
+  "steps": [
+    {
+      "script": "research/단계별 진행경과/01_botsim_적격검열.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 13.885,
+      "log": "logs/01_botsim_적격검열-1790512041843878000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/02_기능어목록_생성.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.288,
+      "log": "logs/02_기능어목록_생성-1790512055730731000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/13-1_fox8재파싱.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 3349.516,
+      "log": "logs/13-1_fox8재파싱-1790512138789335000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/04_기능어측정.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 5457.59,
+      "log": "logs/04_기능어측정-1790512056019611000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/05_사용률검수.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.354,
+      "log": "logs/05_사용률검수-1790517513628174000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/06_봇사람비교.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.28,
+      "log": "logs/06_봇사람비교-1790517513982668000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/07_형태자질비교.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.32,
+      "log": "logs/07_형태자질비교-1790517514262444000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/04-1_확장재파싱.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 2957.013,
+      "log": "logs/04-1_확장재파싱-1790517514582628000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/08_R블록.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.484,
+      "log": "logs/08_R블록-1790520517673541000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/09-1_분량통제.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 0.401,
+      "log": "logs/09-1_분량통제-1790520518158693000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/02-1_임계값민감도.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 1.695,
+      "log": "logs/02-1_임계값민감도-1790520518563712000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_prepare_measure.py",
+      "arguments": [
+        "prepare"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 8.246,
+      "log": "logs/fmr_prepare_measure-1790520520259890000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_prepare_measure.py",
+      "arguments": [
+        "measure"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2875.189,
+      "log": "logs/fmr_prepare_measure-1790520528522767000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/09_FMR 통제 재검증/test_fmr_controls.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 2.246,
+      "log": "logs/test_fmr_controls-1790523403756660000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/09_FMR 통제 재검증/fmr_controls.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 5.347,
+      "log": "logs/fmr_controls-1790523406003672000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/10-1_귀무오류율.py",
+      "arguments": [
+        "--reps",
+        "1000"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 74.789,
+      "log": "logs/10-1_귀무오류율-1790523411353138000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/10_동질성검정.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 1.762,
+      "log": "logs/10_동질성검정-1790523486147300000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/11_판별기.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 77.229,
+      "log": "logs/11_판별기-1790523487911875000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/12-3_판별기적용.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 7.328,
+      "log": "logs/12-3_판별기적용-1790523565135563000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/13_fox8전이.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 11.347,
+      "log": "logs/13_fox8전이-1790523572465897000.log"
+    }
+  ]
+}
