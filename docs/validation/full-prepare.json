@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "code_commit": "525bef6",
+  "prepare_mode": "full",
+  "measurement_cache_absent": {
+    "01_적격계정.json": true,
+    "02_기능어목록.json": true,
+    "04_기능어측정.json": true,
+    "04-1_확장재파싱.json": true,
+    "13-1_fox8재파싱.json": true,
+    "09_FMR 통제 재검증/제한코퍼스_원카운트.json": true
+  },
+  "integrity": {
+    "files": 55,
+    "mismatches": [],
+    "passed": true,
+    "mode": "full"
+  },
+  "raw_accounts_and_UD_checks": [
+    {
+      "file": "01_적격계정.json",
+      "keys": [
+        "계정"
+      ],
+      "sha256": "1322f030069c5e0ace4af4ec6e429b4dc08afbd1492e7b8f32eeae00402a9b2b",
+      "passed": true
+    },
+    {
+      "file": "01_적격계정.json",
+      "keys": [
+        "라벨"
+      ],
+      "sha256": "8b3355f163257881802392165bde531043454b3b13fe05477347ee3cf0796ff3",
+      "passed": true
+    },
+    {
+      "file": "02_기능어목록.json",
+      "keys": [
+        "기능어"
+      ],
+      "sha256": "980f17e01baaa9f9c41020c8ef4ca02fb74f552fd7f6a4c2834a7b8931bb7dd6",
+      "passed": true
+    },
+    {
+      "file": "02_기능어목록.json",
+      "keys": [
+        "근거"
+      ],
+      "sha256": "3487b6145bf2388237e83d46feccbcc0a4f1e05a29452d9d84eb0c7ea86d0393",
+      "passed": true
+    },
+    {
+      "file": "02_기능어목록.json",
+      "keys": [
+        "집계"
+      ],
+      "sha256": "0d1530b833e799c2b8416192d678ba473d5ba271c19ff32a4b83f5bfc307bebf",
+      "passed": true
+    }
+  ],
+  "scope": "Real GitHub download; full-mode extraction + raw account/UD steps. Full parsing is separately recorded."
+}
