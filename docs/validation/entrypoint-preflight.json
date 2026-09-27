@@ -6,7 +6,9 @@
     "extra_arguments_stop": true,
     "full_preserves_existing_work": true,
     "incomplete_workspace_stops": true,
-    "failed_integrity_record_stops": true
+    "failed_integrity_record_stops": true,
+    "analysis_failure_not_reported_as_success": true,
+    "full_mode_routes_correctly": true
   },
-  "scope": "Launcher preflight only; installation stubs used for incomplete-workspace checks. End-to-end replay recorded separately."
+  "scope": "Launcher preflight and routing only; installation/analysis stubs used where noted. Full-mode routing is not a full raw-data run. Real end-to-end replay recorded separately."
 }

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "repository": "https://github.com/ASEODA/bot-classification-repro",
+  "code_commit": "ff1a84f178f4acf77a48d9aefe68a02ffb0fd786",
+  "checked_at_utc": "2026-09-27T12:02:54.907188+00:00",
+  "download_method": "Actual GitHub ZIP archive plus fresh private Release asset downloads; no local data/model copy.",
+  "launch_command": "bash run.sh",
+  "initial_state": {
+    "venv_existed": false,
+    "assets_existed": false,
+    "work_existed": false,
+    "directory_contains_spaces_and_korean": true
+  },
+  "platform": "macOS-26.5.2-arm64-i386-64bit-Mach-O",
+  "launcher_sha256": "1b6b0558ef9c1c68abc02b7651db282727939bb075b2aa2301a505ea32c9d2a6",
+  "initial_integrity": {
+    "files": 156,
+    "mismatches": [],
+    "passed": true
+  },
+  "numerical_comparison": {
+    "passed": true,
+    "differences": []
+  },
+  "runs": [
+    {
+      "script": "research/단계별 진행경과/10_동질성검정.py",
+      "arguments": [],
+      "exit_code": 0,
+      "elapsed_seconds": 9.427,
+      "log": "logs/10_동질성검정-1790510336388967000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/11_판별기.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 121.19,
+      "log": "logs/11_판별기-1790510345817484000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/12-3_판별기적용.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 6.993,
+      "log": "logs/12-3_판별기적용-1790510467009077000.log"
+    },
+    {
+      "script": "research/단계별 진행경과/13_fox8전이.py",
+      "arguments": [
+        "--overwrite"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 19.079,
+      "log": "logs/13_fox8전이-1790510474002538000.log"
+    }
+  ],
+  "scope": "Default launch from provided measurements. Not a full raw-text parsing run. Scientific source files and asset bytes unchanged."
+}
