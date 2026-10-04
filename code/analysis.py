@@ -1,4 +1,4 @@
-"""집단 차이·세 통제·집단 동질성. 판별 자질 선택에는 결과를 쓰지 않는다."""
+"""집단 차이·세 통제·집단 동질성. 판별 특성 선택에는 결과를 사용하지 않는다."""
 import math
 from collections import Counter
 import numpy as np
@@ -83,7 +83,7 @@ def matched_matrix(T, pairs):
 
 
 def fox8_pairs(T, human_filter=None):
-    """[13 match_fox8] 후보 uid 오름차순 봇 · 사람, 분모 log(토큰수_구두점제외), 캘리퍼 0.10, 시드 20260926."""
+    """봇·사람 ID를 정렬한 뒤 비구두점 토큰 수의 로그값으로 매칭한다. 캘리퍼 0.10, 시드 20260926."""
     labels = T["labels"]
     src = dict(zip(T["ids"], T["info"].get("자료원", [None] * len(T["ids"]))))
     pool_bot = sorted(u for u in T["ids"] if labels[u] == "bot")

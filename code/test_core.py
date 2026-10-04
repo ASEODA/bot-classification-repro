@@ -1,9 +1,18 @@
-"""작은 손계산·분할·학습/평가 분리 회귀 검사. 원자료/네트워크 불필요."""
+"""특성 계산, 분할, 학습·평가 분리의 단위검사. 네트워크와 원자료는 필요하지 않다."""
+import copy
+import gzip
+import io
+import json
+import tarfile
+import tempfile
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 import numpy as np
 from sklearn.metrics import roc_auc_score
 import common as C
 import evaluation as E
+import prepare_data as P
 
 
 class CoreTests(unittest.TestCase):
@@ -63,6 +72,77 @@ class CoreTests(unittest.TestCase):
         p,dist=C.auc_boot(s,np.array([2,3]),np.array([0,1]),W,W)
         self.assertEqual(p,roc_auc_score(y,s))
         self.assertTrue(((dist>=0)&(dist<=1)).all())
+
+
+class DataPreparationTests(unittest.TestCase):
+    def sample(self, generated=False):
+        settings={"실행":{"folder":"/private/work"}, "시드":20260926,
+                  "파이프라인":{"모델경로":{"pos":"/private/cache/resources/en/pos/model.pt"}},
+                  "정제규칙":{"MIN_DOCS":10, "출처":"archived selection code"},
+                  "입력":{"Users.csv":{"경로":"/private/work/Users.csv", "sha256":"0"*64}}}
+        if generated:
+            settings.update({"모델ID표":{"표":{"MODEL_SLOT_1":"example/model"}, "결정":"selection record"},
+                             "시각규칙":{}, "복사":{"변형_이름표":{}}, "변형_이름표":{}})
+        return {"설정":settings, "계정":{"u":{"tokens":17,"values":[0.25,None],
+                                                    "text":"Source text /private/work is not metadata."}}}
+
+    def test_public_metadata_preserves_measurements(self):
+        for generated in (False,True):
+            original=self.sample(generated)
+            result=P.public_openrouter(copy.deepcopy(original))
+            self.assertEqual(result["계정"],original["계정"])
+            self.assertEqual(result["설정"]["시드"],20260926)
+            self.assertNotIn("실행",result["설정"])
+            self.assertEqual(result["설정"]["파이프라인"]["모델경로"]["pos"],"en/pos/model.pt")
+            self.assertEqual(result["설정"]["입력"]["botsim_users"],"0"*64)
+            if generated:
+                self.assertEqual(result["설정"]["모델ID표"]["표"],original["설정"]["모델ID표"]["표"])
+
+    def test_public_metadata_is_idempotent(self):
+        for generated in (False,True):
+            once=P.public_openrouter(self.sample(generated))
+            self.assertEqual(P.public_openrouter(copy.deepcopy(once)),once)
+
+    def test_public_metadata_archive_is_deterministic(self):
+        original=self.sample()
+        payload=json.dumps(original).encode()
+        with tempfile.TemporaryDirectory() as tmp:
+            paths=[Path(tmp)/name for name in ("a.gz","b.gz")]
+            for path in paths: P.gzip_openrouter(io.BytesIO(payload),path)
+            self.assertEqual(paths[0].read_bytes(),paths[1].read_bytes())
+            with gzip.open(paths[0],"rt") as f:
+                self.assertEqual(json.load(f)["계정"],original["계정"])
+
+    def test_anonymous_download_requires_local_inputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            (root/"data").mkdir()
+            (root/"data/manifest.json").write_text(json.dumps({"files":{"data/raw/botsim.zip":"0"*64}}))
+            with patch.object(P,"ROOT",root), patch.object(P,"URL","https://anonymous.example/release/"), \
+                    patch.object(P.urllib.request,"urlopen") as request:
+                with self.assertRaisesRegex(RuntimeError,"익명 미러"):
+                    P.ensure()
+                request.assert_not_called()
+
+
+    def test_model_archive_preserves_files_without_local_headers(self):
+        payload=b"model weights"
+        with tempfile.TemporaryDirectory() as tmp:
+            src=Path(tmp)/"source.tar.gz"
+            info=tarfile.TarInfo("models/stanza/model.pt")
+            info.size=len(payload)
+            info.uid,info.gid,info.uname,info.gname,info.mtime=123,456,"local-user","local-group",12345
+            info.pax_headers={"comment":"local execution"}
+            with tarfile.open(src,"w:gz") as archive:
+                archive.addfile(info,io.BytesIO(payload))
+            outputs=[Path(tmp)/name for name in ("a.tar.gz","b.tar.gz")]
+            for path in outputs:P.prepare_models(src,path)
+            self.assertEqual(outputs[0].read_bytes(),outputs[1].read_bytes())
+            with tarfile.open(outputs[0]) as archive:
+                member=archive.getmembers()[0]
+                self.assertEqual(archive.extractfile(member).read(),payload)
+                self.assertEqual((member.uid,member.gid,member.uname,member.gname,member.mtime),(0,0,"","",0))
+                self.assertEqual(member.pax_headers,{})
 
 
 if __name__=="__main__":

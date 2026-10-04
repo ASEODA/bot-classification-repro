@@ -1,4 +1,4 @@
-"""BotSim 매칭 512쌍: 5겹 교차검증 후 전체 학습. fox8 라벨을 읽지 않는다."""
+"""BotSim 매칭 512쌍으로 5겹 교차검증 후 전체 학습한다. fox8 라벨은 사용하지 않는다."""
 import warnings
 import joblib
 import numpy as np

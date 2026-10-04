@@ -1,4 +1,4 @@
-"""2026-10-01 확인 실험: 학습 눈금 kNN10 + 로지스틱, 1:1 순위 결합."""
+"""학습 척도 kNN10, 로지스틱 확률, 동일 가중 순위 결합을 이용한 fox8 평가."""
 import operator
 import time
 from collections import Counter
@@ -39,10 +39,10 @@ def counterfactual(X, y, rng, side):
     bi, hi = np.where(y == 1)[0], np.where(y == 0)[0]
     mb, mh = np.nanmedian(X[bi], 0), np.nanmedian(X[hi], 0)
     Xc = X.copy()
-    if side == "bot":       # 봇 = 봇 중앙값 + 사람 잔차
+    if side == "bot":       # 봇 중앙값 + 표집한 사람 잔차
         donors = hi[rng.integers(0, len(hi), size=len(bi))]
         Xc[bi] = mb[None, :] + (X[donors] - mh[None, :])
-    else:                   # 사람 = 사람 중앙값 + 봇 잔차
+    else:                   # 사람 중앙값 + 표집한 봇 잔차
         donors = bi[rng.integers(0, len(bi), size=len(hi))]
         Xc[hi] = mh[None, :] + (X[donors] - mb[None, :])
     return Xc
@@ -82,7 +82,7 @@ def declared_scores(X, b, prep):
         ge = C.density(X, (10,))[0][10]
         sc["G_eval"], sc["S_eval"] = ge, C.rank_mean(L, ge)
         why = None
-    except AssertionError as ex:          # 보고만 하는 행. 계산 불가면 그 행만 비운다.
+    except AssertionError as ex:          # 계산할 수 없는 기술적 비교만 비운다.
         why = str(ex)
     return sc, P, why
 

@@ -1,4 +1,4 @@
-"""한 진입점: fast(측정값), full(원문), smoke(부분 파싱), data(원자료 준비), verify."""
+"""특성표 분석, 원문 추출, 부분 파싱, 데이터 준비, 기준 결과 대조의 실행 진입점."""
 import sys
 sys.dont_write_bytecode = True
 import argparse
@@ -143,7 +143,7 @@ def verify():
 def report(a,e):
     lines=["# 재현 결과", "", "## 판별 AUC", "", "| 자료 | L | G | 결합 |", "|---|---:|---:|---:|"]
     t=C.read_json(C.RESULTS/"training.json")
-    lines.append(f"| BotSim 5겹 평가 | {t['auc']:.6f} | — | — |")
+    lines.append(f"| BotSim 5겹 교차검증 | {t['auc']:.6f} | — | — |")
     main=e["집합"]["501"]
     for w,name in (("W0","fox8 확인"),("W1","중심 차이 제거"),("W2","퍼짐 차이 축소")):
         r=main[w]["AUC"]
@@ -156,11 +156,11 @@ def report(a,e):
         gain=np.mean([r["W0"]["차"]["S−L"][0] for r in rows])
         lines.append(f"| {name} | {auc:.6f} | {gain:.6f} |")
     lines += ["", "5%는 봇 24개·사람 449개이며 3회 중 한 구간이 0을 포함한다.",
-              "자기폭로 유사 문구 제외 조건에서는 퍼짐 조작 관문을 통과하지 못했다.",
-              "점수 고정 부트스트랩이며, fox8은 개발 이력이 있는 외부 확인 자료다.", "", "## FMR 차이와 동질성", ""]
+              "잔존 자기폭로 유사 문구 제외 조건에서는 퍼짐 조작의 확인 기준을 충족하지 못했다.",
+              "부트스트랩은 점수를 고정한다. fox8 확인 계정은 이전 통합 분석에 포함된 적이 있어 독립 시험 집합이 아니다.", "", "## FMR 차이와 동질성", ""]
     n=sum(r["주목"] for family in a["전체기준선"].values() for r in family.values())
-    lines.append(f"전체 주목 특성: {n}/250")
-    for name,r in a["요약"].items(): lines.append(f"- {name}: 기존 주목 중 {sum(v['효과유지'] for v in r.values())}개 효과 유지")
+    lines.append(f"효과크기·유의성 기준을 충족한 특성: {n}/250")
+    for name,r in a["요약"].items(): lines.append(f"- {name}: 기준 특성 중 {sum(v['효과유지'] for v in r.values())}개 효과 유지")
     for name,r in a["동질성"].items(): lines.append(f"- {name}: "+", ".join(f"{b} {v['비율']:.6f}" for b,v in r["블록별"].items()))
     lines += ["", "세부값: analysis.json / training.json / evaluation.json", "검증: verification.json", ""]
     C.write_text(C.RESULTS/"summary.md","\n".join(lines))
@@ -182,7 +182,7 @@ def main():
     else:
         raw_features(limit=3 if mode=="smoke" else None)
         if mode=="smoke":
-            C.say("원문 부분 재측정 검증 완료. 전량 재측정 완료를 뜻하지 않습니다.")
+            C.say("원문 부분 재측정값 대조 완료 (smoke 모드).")
             return
     import analysis, train, evaluation
     a=analysis.run()

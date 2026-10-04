@@ -1,3 +1,5 @@
+> [AIBot_fox8](https://github.com/osome-iu/AIBot_fox8/tree/4f6bf49)의 원본 문서다. 아래 상대 링크는 원본 저장소를 기준으로 한다.
+
 # Introduction
 This repo contains the code and information for the paper "[Anatomy of an AI-powered malicious social botnet](https://doi.org/10.51685/jqd.2024.icwsm.7)".
 

@@ -1,4 +1,4 @@
-"""BotSim·fox8 원문에서 계정별 FMR 재측정. API 호출 없음."""
+"""BotSim·fox8 원문에서 계정별 FMR 특성을 추출한다. 생성 모델 API는 호출하지 않는다."""
 import csv
 import hashlib
 import json
@@ -15,7 +15,7 @@ TRUNC_TAIL = re.compile(r"\S*\u2026$")
 
 
 def full_botsim_corpus():
-    """[01 · 04-1 rebuild_docs · 09-2] 적격 계정 문서(서브레딧 포함)와 댓글 한정 코퍼스."""
+    """적격 계정 문서, 서브레딧 정보, 댓글 한정 코퍼스를 구성한다."""
     import langid
     data = C.read_json(C.BOTSIM_RAW / "user_post_comment.json")
     cand, cand_sub = {}, {}
@@ -34,7 +34,7 @@ def full_botsim_corpus():
             cleaned, _, _ = C.clean_doc(text)
             if cleaned is not None:
                 rows.append((str(ts or ""), cleaned, sub))
-        rows.sort(key=lambda r: r[0])            # 시각 오름차순, 안정 정렬
+        rows.sort(key=lambda r: r[0])            # 시각 오름차순으로 안정 정렬한다.
         if len(rows) > C.MAX_DOCS:
             rows = rows[-C.MAX_DOCS:]
         if len(rows) >= C.MIN_DOCS:
@@ -45,7 +45,7 @@ def full_botsim_corpus():
         if langid.classify(" ".join(docs))[0] == C.LANG_TARGET:
             eligible[uid] = docs
     subs = {u: cand_sub[u] for u in eligible}
-    # 09-2 댓글 한정: 적격 계정의 comment_1 · comment_2 만 같은 규칙으로 다시 거른다.
+    # comment_1·comment_2에 한정하여 적격 규칙을 다시 적용한다.
     comments = {}
     for uid in sorted(eligible):
         u = data[uid]
@@ -69,7 +69,7 @@ def full_botsim_corpus():
 
 
 def full_funcwords():
-    """[02] UD EWT 닫힌 어류(ADP AUX CCONJ SCONJ DET PRON PART), 빈도 5 이상, 닫힌 어류 비율 0.5 이상."""
+    """UD EWT에서 빈도 5 이상이고 닫힌 품사로 쓰인 비율이 50% 이상인 형태를 선택한다."""
     closed = {"ADP", "AUX", "CCONJ", "SCONJ", "DET", "PRON", "PART"}
     counts = {}
     for name in ("en_ewt-ud-train.conllu", "en_ewt-ud-dev.conllu", "en_ewt-ud-test.conllu"):
@@ -96,7 +96,7 @@ def full_funcwords():
 
 
 def full_fox8_corpus():
-    """[13-1] 비리트윗 → 정제 → 계정별 최근 200건(힙) → 10건 이상 → 계정 단위 langid 'en'."""
+    """리트윗을 제외하고 정제한 뒤 계정별 최근 200건 중 10건 이상을 요구하고 langid로 영어를 선정한다."""
     import heapq
     import langid
     conn = sqlite3.connect("file:" + urllib.parse.quote(str(C.FOX8_DB)) + "?mode=ro", uri=True)
@@ -129,7 +129,7 @@ def full_fox8_corpus():
 
 
 def doc_counts(doc, words, key=None):
-    """[fmr_prepare_measure doc_counts · 13-1 aggregate] 문서 하나의 카운트."""
+    """파싱된 문서 하나의 문장·토큰·기능어·품사·형태론 특성을 센다."""
     a = {"문서수": 1, "문장수": 0, "토큰수": 0, "토큰수_구두점제외": 0,
          "기능어": Counter(), "UPOS": Counter(), "자질": Counter(), "문장길이": [], "버킷": key}
     for sent in doc.sentences:
@@ -172,7 +172,7 @@ def combine(rows, with_buckets=False):
 
 
 class ParseCache:
-    """계정 단위 파싱 결과(문서별 카운트)를 work/parse_cache.sqlite 에 둔다. 중단 뒤 재개용."""
+    """재개 가능한 추출을 위해 계정별 문서 카운트를 results/.work/parse_cache.sqlite에 저장한다."""
 
     def __init__(self):
         C.WORK.mkdir(parents=True, exist_ok=True)
@@ -245,7 +245,7 @@ def full_parse(limit):
     for u in [u for u in sorted(comment_docs) if u in botsim]:
         rows = run("comments", u, comment_docs[u], reuse={d: r for d, r in per_doc[u].items()})
         comments[u] = combine(rows)
-    line("[full] 5/5 fox8 파싱 (계정 단위 bulk_process, 13-1)")
+    line("[full] 5/5 fox8 파싱 (계정 단위 bulk_process)")
     fids = sorted(fox_work)[:limit] if limit else sorted(fox_work)
     fox8 = {}
     t = time.time()
@@ -263,7 +263,7 @@ def full_parse(limit):
 
 
 def fox8_caveat_cols(a):
-    """[13 caveat_numbers] 버킷 '연도|답글' 에서 연도 중앙값 · 최대 · 답글 비율 · 2023년 문서 수."""
+    """연도·답글 버킷에서 연도 중앙값·최댓값, 답글 비율, 2023년 문서 수를 요약한다."""
     years, replies = Counter(), 0
     for key, counts in a["버킷별"].items():
         year, reply = key.split("|")
@@ -278,17 +278,17 @@ def fox8_caveat_cols(a):
 
 
 def strip_trunc(t):
-    """[15 사전선언 10-2] 끝의 "…"(U+2026)와 그 앞에 공백 없이 붙은 잘린 낱말을 지운다. 한 번만."""
+    """끝의 줄임표(U+2026)와 그 앞에 공백 없이 붙은 잘린 낱말을 한 번 제거한다."""
     if t.endswith("\u2026"):
         return TRUNC_TAIL.sub("", t).rstrip(), True
     return t, False
 
 
 def fox8_trunc(G, cache, limit=None):
-    """(C) fox8 최종 문서에서 절단 꼬리를 지우고 Stanza 로 다시 잰 자질 표. 문서 선정은 다시 하지 않는다."""
+    """선정된 문서는 유지하면서 잘린 끝부분을 제거한 뒤 Stanza 특성을 다시 추출한다."""
     import stanza
     import torch
-    line("[fox8 절단] 1/3 최종 문서 재선정 (13-1 규칙) · 13-1 캐시와 대조")
+    line("[fox8 절단] 1/3 문서 재선정 및 추출 캐시 대조")
     t = time.time()
     work, labels = full_fox8_corpus()
     old = cache["fox8"]
@@ -297,8 +297,8 @@ def fox8_trunc(G, cache, limit=None):
     same_docs = all(len(work[u]) == old[u]["문서수"]
                     and Counter(k for _, k in work[u]) == Counter({k: v[0] for k, v in old[u]["버킷별"].items()})
                     for u in work) if set(work) == set(old) else False
-    G.add("재선정 계정 집합 · 계정별 문서수 · 버킷별 문서수 == 13-1", "1,991 같음", len(work), same_docs)
-    C.check(same_docs, "재선정 문서가 13-1과 다르다")
+    G.add("재선정 계정·문서 수·버킷별 문서 수와 추출 캐시 대조", "동일 기록", len(work), same_docs)
+    C.check(same_docs, "재선정 문서와 추출 캐시가 다르다")
     stats = {}
     new_docs = {}
     for u in sorted(work):

@@ -1,4 +1,4 @@
-"""고정된 연구 수치 계산. 원 함수의 계산 순서·시드·반올림 규칙을 유지한다."""
+"""공통 특성 정의, 통계 계산, 전처리 함수."""
 import csv
 import hashlib
 import json
@@ -71,7 +71,7 @@ def line(title=""):
 
 
 def label_use(where):
-    """라벨을 쓰는 지점마다 같은 꼴의 마커를 찍는다."""
+    """집단 라벨을 사용하는 연산을 기록한다."""
     say(f"  [라벨 사용] {where}")
 
 
@@ -111,7 +111,7 @@ def sha256_file(path):
 
 
 def jsonable(o):
-    """numpy 값을 파이썬 값으로. NaN · inf는 None."""
+    """NumPy 값을 JSON 호환 값으로 변환한다. NaN·inf는 None으로 처리한다."""
     if isinstance(o, dict):
         return {str(k): jsonable(v) for k, v in o.items()}
     if isinstance(o, (list, tuple)):
@@ -134,12 +134,12 @@ def check(cond, msg):
 
 
 def normalize_apostrophe(s):
-    """[04] 굽은 아포스트로피(U+2019)를 곧은 것으로. 토큰과 목록 양쪽에 건다."""
+    """토큰과 특성 목록의 굽은 아포스트로피(U+2019)를 ASCII 아포스트로피로 정규화한다."""
     return s.replace("’", "'")
 
 
 def funcword_list(raw_words):
-    """[04 · 10] 02 목록 174종 → 정규화 · 정렬 172종, 해시 앞 16자."""
+    """원본 174종을 정규화·정렬하여 기능어 172종과 체크섬 앞 16자리를 반환한다."""
     words = sorted({normalize_apostrophe(w) for w in raw_words})
     h = hashlib.sha256("\n".join(words).encode("utf-8")).hexdigest()[:16]
     return words, h
@@ -150,7 +150,7 @@ def axis_of(key):
 
 
 def build_axis_map(accounts):
-    """[07] 자료 전체(라벨 없음)에서 축별 값 종류를 모은다."""
+    """라벨을 사용하지 않고 자료 전체에서 형태론 축별 관측값의 종류를 모은다."""
     axis_values = {}
     for a in accounts.values():
         for key in a.get("자질", {}):
@@ -162,13 +162,13 @@ def build_axis_map(accounts):
 
 
 def f_rates(a, keys):
-    """[05 · 11] 기능어 카운트 / 토큰수_구두점제외, 6자리 반올림. 없는 키는 0회."""
+    """비구두점 토큰 수 대비 기능어 빈도. 소수 여섯째 자리로 반올림하며 없는 키는 0회로 처리한다."""
     w = a["토큰수_구두점제외"]
     return [round(a["기능어"].get(k, 0) / w, RATE_DIGITS) if w else None for k in keys]
 
 
 def m_ratios(a, keys, axis_map):
-    """[07 · 11] 대립값 2 이상 축은 축 내부 합, 1개면 토큰수_구두점제외. 분모 0은 결측."""
+    """값이 둘 이상인 축은 축 내부 합, 하나인 축은 비구두점 토큰 수로 나눈다. 분모 0은 결측이다."""
     feats = a.get("자질", {})
     denom_tok = a.get("토큰수_구두점제외", 0)
     axis_total = {}
@@ -186,14 +186,14 @@ def m_ratios(a, keys, axis_map):
 
 
 def upos_ratios(a, keys):
-    """[07 · 11] 품사 카운트 / 토큰수_구두점제외."""
+    """비구두점 토큰 수 대비 품사 빈도."""
     pos = a.get("UPOS", {})
     d = a.get("토큰수_구두점제외", 0)
     return [None if d == 0 else pos.get(k, 0) / d for k in keys]
 
 
 def rhythm(a):
-    """[08 · 11] 문장당 토큰수, 구두점 비율, 변동계수(표본표준편차, 문장 5개 미만 결측)."""
+    """평균 문장 길이, 구두점 비율, 길이 변동계수. 변동계수는 표본표준편차를 쓰며 문장 5개 미만이면 결측이다."""
     tok, tok_np, n_sent = a["토큰수"], a["토큰수_구두점제외"], a["문장수"]
     lengths = a["문장길이"]
     assert len(lengths) == n_sent and sum(lengths) == tok_np, "문장길이 정합 실패"
@@ -208,7 +208,7 @@ def rhythm(a):
 
 
 def build_matrix(accounts, ids, keys, axis_map):
-    """[11] (len(ids) x 250) 행렬. 결측 NaN. 열 순서 F · M형태 · M품사 · R."""
+    """F·형태론·품사·R 순서의 250열 행렬을 구성한다. 결측값은 NaN이다."""
     rows = []
     for u in ids:
         a = accounts[u]
@@ -218,7 +218,7 @@ def build_matrix(accounts, ids, keys, axis_map):
 
 
 def feature_keys(accounts, function_words):
-    """자질 250 키. F = 정규화 기능어 172, M형태 · M품사 = 1,869계정 전체 키 합집합 정렬(07과 같음)."""
+    """기능어 172종, 1,869개 계정의 형태론·품사 키 합집합을 정렬한 값, 리듬 특성으로 키를 구성한다."""
     return {"F": list(function_words),
             "M형태": sorted({k for a in accounts.values() for k in a.get("자질", {})}),
             "M품사": sorted({k for a in accounts.values() for k in a.get("UPOS", {})}),
@@ -238,7 +238,7 @@ def _cell(v):
 
 
 def write_table(path, ids, info_cols, info, order, X):
-    """ids 행, info_cols(라벨 · 메타) 열 + 자질 250 열."""
+    """계정 ID, 라벨·메타데이터 열, 특성 250개 열을 기록한다."""
     p = _inside_code(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with open(p, "w", encoding="utf-8", newline="") as f:
@@ -249,7 +249,7 @@ def write_table(path, ids, info_cols, info, order, X):
 
 
 def read_table(path):
-    """반환: ids, info(열 이름 → 값 목록), order, X."""
+    """계정 ID, 열별 메타데이터, 특성 순서, 특성 행렬을 반환한다."""
     with open(path, encoding="utf-8", newline="") as f:
         r = csv.reader(f)
         head = next(r)
@@ -290,7 +290,7 @@ def bh(ps):
 
 
 def mw(x, y):
-    """순위 · 동점 보정은 독립 계산, SciPy p값과 전 항목 교차 검산. 델타 = 봇 - 사람 Cliff δ."""
+    """동점 보정을 포함한 Mann–Whitney 통계량을 SciPy와 대조한다. Cliff 델타의 방향은 봇 − 사람이다."""
     if not x or not y:
         return {'U': None, 'p': None, '델타': None, 'z': None}
     nx, ny = len(x), len(y)
@@ -331,14 +331,14 @@ def summary(values):
 
 
 def col_values(X, j, rows):
-    """행 번호 rows 의 j열 값 가운데 결측이 아닌 것(파이썬 float)."""
+    """선택한 행의 j열에서 결측값을 제외하고 파이썬 float 목록을 반환한다."""
     v = X[rows, j]
     return [float(t) for t in v[~np.isnan(v)]]
 
 
 def caliper_match(bot_ids, human_ids, logd, caliper, seed):
-    """log 분모 차 +-caliper 이내 봇:사람 1:1 그리디. 봇 순서는 시드 고정 난수로 섞는다.
-    거리가 같으면 human_ids 앞쪽이 이긴다. 반환: (쌍 [(봇, 사람, 거리)], 탈락 봇, 쓰인 사람)."""
+    """로그 토큰 수 차이의 캘리퍼 안에서 탐욕적 1:1 매칭을 한다. 봇 순서는 고정 시드로 섞는다.
+    거리가 같으면 human_ids 순서를 따른다. 매칭된 (봇, 사람, 거리), 미매칭 봇, 사용한 사람을 반환한다."""
     rng = random.Random(seed)
     order = list(bot_ids)
     rng.shuffle(order)
@@ -385,7 +385,7 @@ def nanmean_cols(M):
 
 
 def centers(X, is_bot):
-    """[라벨 사용 지점] 집단별 원값 중앙값."""
+    """집단 라벨을 사용하여 특성별 집단 중앙값을 계산한다."""
     return nanmedian_cols(X[is_bot]), nanmedian_cols(X[~is_bot])
 
 
@@ -395,7 +395,7 @@ def residuals(X, is_bot, c_bot, c_hum):
 
 
 def residual_scale(R):
-    """척도 s_j = 전 계정 |r| 중앙값. 0이면 평균, 평균도 0 또는 정의 2개 미만이면 자질 제외."""
+    """절대 잔차의 중앙값을 척도로 쓰고 0이면 평균을 쓴다. 척도가 0이거나 관측값이 2개 미만이면 제외한다."""
     A = np.abs(R)
     med, mean = nanmedian_cols(A), nanmean_cols(A)
     n_def = (~np.isnan(A)).sum(axis=0)
@@ -428,7 +428,7 @@ def block_distances(Z):
 
 
 def ratio_of(d_bot, d_hum):
-    """비율 = 사람 거리 중앙값 / 봇 거리 중앙값. 1보다 크면 봇이 더 좁다."""
+    """사람 거리 중앙값을 봇 거리 중앙값으로 나눈다. 1보다 크면 봇의 퍼짐이 더 작다."""
     return float(np.median(d_hum)) / float(np.median(d_bot))
 
 
@@ -458,19 +458,19 @@ def five(v):
 
 
 def block_split(order):
-    """자질 순서 → 동질성 세 블록(F · M · R)의 열 번호."""
+    """특성 열을 동질성 분석의 F·M·R 블록에 대응시킨다."""
     blocks_of = np.array([b for b, _ in order])
     return {B: np.where(np.isin(blocks_of, parts))[0] for B, parts in BLOCKS_B.items()}
 
 
 def homogeneity(Xm, order, n_pairs, sparse_min, seed=SEED, n_perm=N_PERM, ids=None):
-    """10 v1.3 전 절차. Xm 행 = 쌍 순서대로 봇 n 전부 → 사람 n 전부.
-    반환 사전: 블록별 비율 · p · 거리 · 척도 요약, 희소 제외 민감도."""
+    """블록별 동질성 검정과 희소 특성 제외 민감도 분석.
+    행은 매칭된 봇 전체 다음에 같은 쌍 순서의 사람 전체가 이어진다."""
     cols = block_split(order)
     names = [k for _, k in order]
     is_bot = np.array([True] * n_pairs + [False] * n_pairs)
     rng = np.random.default_rng(seed)
-    swaps = rng.random((n_perm, n_pairs)) < 0.5           # 세 블록 · 민감도 공유 (10 결정 G)
+    swaps = rng.random((n_perm, n_pairs)) < 0.5           # 쌍 교환을 세 블록과 민감도 조건에서 공유한다.
     res, sens = {}, {}
     for B in ("F", "M", "R"):
         Xb = Xm[:, cols[B]]
@@ -496,7 +496,7 @@ def homogeneity(Xm, order, n_pairs, sparse_min, seed=SEED, n_perm=N_PERM, ids=No
         if ids is not None:
             res[B]["계정별_거리"] = {"봇": dict(zip(ids[:n_pairs], map(float, d_bot))),
                                 "사람": dict(zip(ids[n_pairs:], map(float, d_hum)))}
-        # 희소 제외 민감도 (10 결정 O): 원값 0 계정이 한 집단에서 sparse_min 이상인 자질을 뺀다.
+        # 한 집단에서 원값이 0인 계정이 sparse_min 이상인 특성을 제외한다.
         zero = (Xb == 0)
         zb, zh = zero[is_bot].sum(axis=0), zero[~is_bot].sum(axis=0)
         drop = (zb >= sparse_min) | (zh >= sparse_min)
@@ -514,7 +514,7 @@ def homogeneity(Xm, order, n_pairs, sparse_min, seed=SEED, n_perm=N_PERM, ids=No
 
 
 def fit_prep(Xtr, fitted_on):
-    """학습 행만으로 자질별 백분위 함수(xp, fp)와 원값 중앙값."""
+    """학습 행만으로 특성별 백분위 함수와 원값 중앙값을 적합한다."""
     d = Xtr.shape[1]
     xp, fp, med = [], [], np.empty(d)
     for j in range(d):
@@ -546,7 +546,7 @@ def apply_prep(prep, X):
 
 
 def make_folds(units, y, k, rng):
-    """단위(쌍) 묶음으로 k겹. 단위의 라벨 구성으로 층화. 반환: 행 번호 → fold."""
+    """단위의 라벨 구성으로 층화하여 묶음을 k개 폴드에 배정한다. 행별 폴드 번호를 반환한다."""
     kinds = {}
     for ui, u in enumerate(units):
         kinds.setdefault(tuple(sorted(int(y[i]) for i in u)), []).append(ui)
@@ -566,7 +566,7 @@ def ranks(values):
 
 
 def density(matrix, ks):
-    """[14 · 11] 묶음 안 열 중앙값 대치 → 묶음 안 백분위 → L1 평균 거리 → k번째 이웃 거리의 음수. 라벨 없음."""
+    """집합 내 중앙값 대치·백분위 변환 후 L1 평균 거리를 구해 k번째 이웃 거리에 음수를 취한다. 라벨은 사용하지 않는다."""
     check(matrix.ndim == 2 and len(matrix) > max(ks), "행렬 크기 또는 k 오류")
     check(not np.isinf(matrix).any(), "자질에 무한값 존재")
     check(not np.isnan(matrix).all(axis=0).any(), "열 전체 결측")
@@ -581,7 +581,7 @@ def density(matrix, ks):
 
 
 def rank_mean(s_pos, s_dens):
-    """제안(결합) 점수: 묶음 안 평균 순위 1:1 평균 r, 점수 = (r - 1)/(n - 1)."""
+    """집합 내 평균 순위를 같은 가중치로 결합하여 (r − 1) / (n − 1)로 정규화한다."""
     n = len(s_pos)
     assert n == len(s_dens) and n >= 2
     w_pos, w_dens = PROPOSAL_WEIGHTS
@@ -590,7 +590,7 @@ def rank_mean(s_pos, s_dens):
 
 
 def boot_counts(key, strata, R):
-    """부트스트랩 재추출 행렬 (R x 단위 수). 시드 [20260926, 열쇠...]."""
+    """시드 [20260926, *key]로 R × 단위 수 크기의 부트스트랩 재추출 행렬을 반환한다."""
     rng = np.random.default_rng([SEED, *key])
     strata = np.asarray(strata)
     W = np.zeros((R, len(strata)))
@@ -622,7 +622,7 @@ def auc_boot(s, bidx, hidx, Wb, Wh):
 
 
 def clean_doc(text):
-    """1) 자기폭로 문장 절제 2) URL · 멘션 제거 3) 20자 검사. 반환 (정제문, 탈락사유, 절제여부)."""
+    """자기폭로 문장·URL·멘션을 제거하고 20자 기준을 적용한다. 정제문, 탈락 사유, 자기폭로 절제 여부를 반환한다."""
     if not text:
         return None, "빈 문자열", False
     t = unicodedata.normalize("NFC", str(text))
@@ -644,7 +644,7 @@ def clean_doc(text):
 
 
 def fox8_sources(db_path=FOX8_DB):
-    """fox8 users 표의 dataset 열(사람 자료원). 같은 ID가 여러 출처면 마지막 출처(DATA.md)."""
+    """fox8 users 표에서 사람 자료원을 읽는다. 같은 ID가 반복되면 마지막 출처를 사용한다."""
     import sqlite3
     import urllib.parse
     conn = sqlite3.connect("file:" + urllib.parse.quote(str(db_path)) + "?mode=ro", uri=True)
