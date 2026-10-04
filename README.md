@@ -5,6 +5,7 @@
 
 ## 실행
 
+GitHub의 **Code → Download ZIP**으로 내려받아 압축을 풀고, 그 폴더에서 실행한다.
 Python 3.13 권장. 처음 한 번 환경을 준비한다.
 
 ```bash
@@ -16,14 +17,14 @@ bash run.sh
 저장된 **측정값**부터 다시 분석·학습·평가한다. 저장된 판별기나 정답 결과를 출력하는 방식이 아니다.
 마지막에 이전 실행의 기준 결과와 대조한다. 결과는 **`results/summary.md`**, 성공 여부는 `results/verification.json`이다.
 
-**원문부터 다시 측정하려면** 아래를 실행한다. Stanza 모델은 동봉되어 있고, 재실행 중 모델 다운로드나 유료 API 호출은 없다. 전량 파싱은 수 시간이 걸릴 수 있다.
+**원문부터 다시 측정하려면** 아래를 실행한다. 원자료·Stanza 모델이 없으면 기존의 고정된 GitHub Release에서 자동으로 내려받는다(약 354 MB, 최초 1회). 최신 모델이나 새 생성물을 받는 것이 아니다. 유료 API 호출은 없으며 전량 파싱은 수 시간이 걸릴 수 있다.
 
 ```bash
 .venv/bin/python -m pip install -r code/requirements-full.txt
 bash run.sh full
 ```
 
-`bash run.sh smoke`는 코퍼스별 앞 3계정의 원문 파싱 및 저장 측정값 일치를 점검한다. `bash run.sh verify`는 기존 실행 결과만 다시 대조한다.
+`bash run.sh smoke`는 코퍼스별 앞 3계정의 원문 파싱 및 저장 측정값 일치를 점검한다. `bash run.sh data`는 원자료만 준비하고, `bash run.sh verify`는 기존 실행 결과만 다시 대조한다.
 
 ## 폴더
 
@@ -46,11 +47,11 @@ bash run.sh full
 - fox8 전체를 이전 방식으로 살펴본 후 개발/확인 집합을 나눴다. 완전히 처음 보는 독립 시험으로 간주하지 않는다. 부트스트랩은 점수·이웃 구조를 고정한 평가 집합 내부 구간이다.
 
 출처: [BotSim](https://github.com/QQQQQQBY/BotSim) (`5c3558f`), [fox8](https://github.com/osome-iu/AIBot_fox8) (`4f6bf49`), [fox8 원자료](https://doi.org/10.5281/zenodo.8035289), [UD English-EWT](https://github.com/UniversalDependencies/UD_English-EWT), [Stanza](https://stanfordnlp.github.io/stanza/).
-입력 해시는 `data/manifest.json`으로 검사한다. 출처별 권리는 원 제공 조건을 따른다. SNS 원문·계정 식별자가 있으므로 **비공개 공동연구 전달용**으로 취급한다. 임의의 새 공개 라이선스를 부여하지 않았다.
+입력 해시는 `data/manifest.json`으로 검사한다. SNS 원문·계정 식별자가 포함되어 있다. 공개 저장소이지만 출처별 권리는 원 제공 조건을 따르며, 임의의 새 공개 라이선스를 부여하지 않았다.
 
-### 전달 상태
+### 원자료 위치
 
-이 **로컬 폴더에는 원자료가 포함**되어 있다. `data/raw/`는 대용량이라 Git 이력에서 제외했다. GitHub 갱신·데이터 자산 업로드는 아직 완료되지 않았다. 현재 GitHub의 이전 버전과 이 폴더를 혼동하지 않는다.
-빠른 재현은 `data/raw/` 없이도 실행할 수 있다. 원문 재측정에는 원자료를 포함한 전체 전달본이 필요하다.
+코드·측정값·검증 기준값은 이 저장소에 있고, 대용량 원자료는 [고정 Release](https://github.com/ASEODA/bot-classification-repro/releases/tag/repro-final-20260927)의 `data-final-20260927.tar.gz`와 `models-20260927.tar.gz`에 있다. `code/prepare_data.py`가 두 파일의 해시를 확인하고 필요한 자료만 `data/raw/`에 준비한다. 예전 코드나 결과 폴더는 가져오지 않는다. Release의 예전 `measurements` 파일도 사용하지 않는다.
+빠른 재현에는 별도 원자료 다운로드가 필요 없다. OpenRouter 데이터도 `bash run.sh data`로 함께 받을 수 있다.
 
 **검증:** 핵심 단위검사 8개, 분석·학습·최종 확인 결과 대조, 원자료→DB 재구성, 코퍼스별 부분 파싱 대조를 통과했다. 이번 정리에서 전 계정의 Stanza 파싱을 다시 완료한 것은 아니다.

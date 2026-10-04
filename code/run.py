@@ -1,4 +1,4 @@
-"""한 진입점: fast(저장 측정값), full(원문 재측정), smoke(원문 3계정씩), verify."""
+"""한 진입점: fast(측정값), full(원문), smoke(부분 파싱), data(원자료 준비), verify."""
 import sys
 sys.dont_write_bytecode = True
 import argparse
@@ -168,10 +168,14 @@ def report(a,e):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("mode",nargs="?",choices=("fast","full","smoke","verify"),default="fast")
+    ap.add_argument("mode",nargs="?",choices=("fast","full","smoke","data","verify"),default="fast")
     mode=ap.parse_args().mode
     C.RESULTS.mkdir(exist_ok=True)
+    if mode in ("full", "smoke", "data"):
+        import prepare_data
+        prepare_data.ensure()
     inputs(mode)
+    if mode=="data": return
     if mode=="verify": verify(); return
     started=time.time()
     if mode=="fast": prepare_fast()
