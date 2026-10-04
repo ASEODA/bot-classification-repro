@@ -1,0 +1,29 @@
+{
+ "algorithm": "sha256",
+ "files": {
+  "data/features/botsim.csv.gz": "1d9a567a30900b4c5c93353f6d11571d996643d0689d65a1aa8764d0ffa0f515",
+  "data/features/comments.csv.gz": "331f2e03e650f911739da10483462dd878295428264e98cf0befc45451fa17e9",
+  "data/features/fox8.csv.gz": "c00d92fda8be4844b8f43c73360d4dbc208121e9a307f6bc42dc4b9a8f4357b5",
+  "data/features/fox8_trunc.csv.gz": "24330e21dca5a5f307b4210e37cbc9edce4e1bdd132045d1a07bf268c3d8d775",
+  "data/features/politics.csv.gz": "b1d581537f44b287c824399a7bdf2269330cf6fdae1f8e0a4fa056cb186274da",
+  "data/raw/botsim.zip": "d9596a26b19de549015f94ccbaa122916d27c8b05bc4f2af5248344aede38e32",
+  "data/raw/fox8.ndjson.gz": "368433bb0d873fc58ae30ba9dff2fd1dc45e18c145d06ea5bf0c772c57ad4030",
+  "data/raw/openrouter-controls.json.gz": "4b2f0bb9fb0f660014c64ccec0d8c86a7035f58e5bdfab247a166009bb7d0963",
+  "data/raw/openrouter-counts.json.gz": "17ee81f5fa2dea3b3841c6bc3474f166b55f5481c865bef92c797fd1e322129b",
+  "data/raw/openrouter-human-examples.jsonl.gz": "7ade23001d894dd5bbee79fb47c7e4eb428f0cffad95bcd58c30ef571f4084ce",
+  "data/raw/openrouter.jsonl.gz": "db0c012315ef8e26a64cc97e2c44b1ee01b5469ceb1cf8734f9ce671f62aa99d",
+  "data/raw/stanza-models.tar.gz": "ad749895167d692f9273af08fff819b11dfe37727e750365ec20beedab016325",
+  "data/raw/ud-ewt.zip": "7faca52c69fcb57e5373a744f2a4e93adefd3de1d43c6b6b1828027d1ff0b03f",
+  "data/records/excluded_fox8.json": "8fd2e1387fd88da7cfda6bf8954cf45cfb35f13a469097f6671deb620d81abfe",
+  "data/records/fox8_LICENSE": "e853654939c6c6bf696c81fdb636e9f0d0094fefadafcede3356975939342af2",
+  "data/records/fox8_README.md": "2d3584ecd0a31b3ef284107ac58cf262bda6e02bb431f3e089508d4f72b8c08c",
+  "data/records/openrouter-split.json": "51b638fef7f82b0970ebb4cc3eea67c9b755e5b7dacf77ecc624d275477580eb",
+  "data/records/protocol.md": "2ed9731fa1bdb746c903753a4c443f248c1359d31187b0e1983c005c748f7e5d",
+  "data/records/provenance.json": "bd1a72a93daab4a1f42e9971343ae8370b45ebccb10995beb5f17ea2133fbc57",
+  "data/records/schema.json": "ba77bd125328cca4e474b54d0a9c3a7f1077af285077c82fc84eb1fdc8e4d3a0",
+  "data/records/split_fox8.json": "ba2888c68a0cc7a06f3cc75e48584846e8bf5b7f469cdb715cc704b781319f24",
+  "expected/analysis.json": "fe858af2b8d401aaf8755b04a5c3a0a7b6fad8bc120163a7f64a2b10d5f0151b",
+  "expected/evaluation.json": "87fcbb60b59520b82853e75d8a4b3930aa59dd9340e1a0426765302d1541c8fc",
+  "expected/training.json": "2a42bdbbb20d341bea2f518d854cf41a43d64f7679a255c32176d8cfabb3dd3a"
+ }
+}

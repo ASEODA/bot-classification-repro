@@ -1,0 +1,20 @@
+{
+ "built": "2026-10-04",
+ "basis": "2026-10-01 확인 실행과 현재 원고 4~6장",
+ "source_prefix": "연구수정/",
+ "sources": {
+  "code/common.py": "57910a98bbc7325333da9b836402c7e0d680528cb24c785fc2a761ca6e4407e7",
+  "code/s01_features.py": "f504e5d0fcecc12899c9a9bb1aac9c1a5cf1c8c060fe4e86a948d2572e7797f1",
+  "code/s02_analysis.py": "45d40c55a90f41273bac76d4d68646865607cc52e8decb697c7dde7cee420d52",
+  "code/s03_classifier.py": "17bd91373c92597939878e194207ef11d74d2f4002996cc7550b5fdf9f61ae2c",
+  "실험탐색/s_confirm.py": "1fc8ed5e14313d76406047f836f1541789309aba2fa182386235f4a8c548c794",
+  "실험탐색/s_explore.py": "68afc36c8ebb5ce7c8962886612067610e41c671439d4669ec80af2f66b2c8cd",
+  "실험탐색/s_사후진단.py": "a4f91eff189daf58d389fb7e06ae0f02dd3d64b7adeed549e35d54c13ec96015",
+  "code/results/s01_features.json": "4b60869d434a40aa5c364f521d527ac7b13ba51f1a655ca2d24b32f330ccc133",
+  "code/results/s02_analysis.json": "9e731a4573fb7b3c295107730f54e34357c5fddc07a6e3dd9e3cc02efc22b5e0",
+  "code/results/s03_classifier.json": "438ebc43bd261747e3410a098d112f7a8439dde74a9fadf73772bce12a87dc72",
+  "실험탐색/확인_결과.json": "352ed45e1d2ddb11ede780fa87fcf1a104d8afdb86329eb9e61facb29b645335"
+ },
+ "scope": "현재 BotSim/fox8 결과 재현; OpenRouter는 보관된 데이터만 제공",
+ "history": "fox8 전체를 이전 방식으로 살핀 뒤 개발/확인 분할 및 최종 절차를 고정함. 미열람 독립 시험으로 재명명하지 않음."
+}

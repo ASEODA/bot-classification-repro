@@ -1,61 +1,56 @@
 # bot-classification
 
-**소셜미디어 계정의 문체로 LLM 봇과 사람을 구분하는 연구**
+**2026-10-04 기준, 현재 논문의 BotSim·fox8 실험 재현본.**
+문체지문(FMR) → 차이·세 통제·동질성 → 로지스틱 학습 → 학습 눈금 이웃 거리와 결합 → fox8 확인·민감도 평가.
 
-손제홍 연구 검토용 · UNIST · 비공개 연구자료
+## 실행
 
-기능어(F), 문법·품사(M), 문장 길이·구두점(R)을 측정하고, 로지스틱 점수와 이웃 밀도를 결합합니다. **최종 연구의 재현에 필요한 자료만 담았습니다. 과거 실행분 보관 폴더는 필요하지 않습니다.**
-
-## 1. 내려받기
-
-저장소 초대를 수락하고 `uv`와 `gh`를 설치한 뒤 실행합니다. [처음 설치하는 방법](docs/RUN.md)
+Python 3.13 권장. 처음 한 번 환경을 준비한다.
 
 ```bash
-gh auth login
-gh repo clone ASEODA/bot-classification-repro
-cd bot-classification-repro
-```
-
-GitHub의 **Code → Download ZIP**으로 받아도 됩니다. 대용량 자료는 비공개 [Release](https://github.com/ASEODA/bot-classification-repro/releases/latest)에 있으며, 아래 명령이 자동으로 다운로드합니다. ZIP만 받은 상태에는 데이터가 아직 없습니다.
-
-## 2. 실행하기
-
-```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 bash run.sh
 ```
 
-제공된 측정값부터 **문체 차이 → 세 통제 → 동질성 → 판별기 재학습 → fox8·OpenRouter 평가 → 기준 결과 대조**를 실행합니다.
+저장된 **측정값**부터 다시 분석·학습·평가한다. 저장된 판별기나 정답 결과를 출력하는 방식이 아니다.
+마지막에 이전 실행의 기준 결과와 대조한다. 결과는 **`results/summary.md`**, 성공 여부는 `results/verification.json`이다.
 
-BotSim·fox8의 **원문부터 다시 측정**하려면:
+**원문부터 다시 측정하려면** 아래를 실행한다. Stanza 모델은 동봉되어 있고, 재실행 중 모델 다운로드나 유료 API 호출은 없다. 전량 파싱은 수 시간이 걸릴 수 있다.
 
 ```bash
+.venv/bin/python -m pip install -r code/requirements-full.txt
 bash run.sh full
 ```
 
-전량 파싱에는 수 시간이 걸릴 수 있습니다. 중단하면 **같은 명령으로 재개**합니다. OpenRouter는 저장된 생성 데이터·측정값을 사용하며, 새 생성이나 API 과금은 없습니다.
+`bash run.sh smoke`는 코퍼스별 앞 3계정의 원문 파싱 및 저장 측정값 일치를 점검한다. `bash run.sh verify`는 기존 실행 결과만 다시 대조한다.
 
-## 3. 확인하기
+## 폴더
 
-마지막 두 검사가 모두 `PASS`여야 합니다.
+| 경로 | 용도 |
+|---|---|
+| `code/` | 원문 처리·통계·학습·최종 평가 코드 |
+| `data/raw/` | BotSim·fox8 원자료, UD, Stanza 모델, OpenRouter 기존 데이터 |
+| `data/features/` | 빠른 재현을 위한 계정별 측정값 5개 표 |
+| `data/records/` | 고정 자질·평가 분할·당시 사전선언·출처 |
+| `expected/` | 이전 실행에서 추출한 검증용 기준값. 학습·채점에는 사용하지 않음 |
+| `results/` | 실행하면 만들어지는 결과. 파싱 중간 저장은 그 안의 `.work/` |
 
-- `numerical result comparison`: 핵심 결과 수치 대조
-- `detailed artifact comparisons`: 계정별 측정값·자질별 결과·분할·개별 점수·계수 대조
+**남기지 않은 것:** 이전 중심 거리 판별기, 후보 탐색 전체, 폐기한 실험, 영상, 원고 사본, 논문 PDF·번역본, 회의록, API 생성 코드.
 
-결과는 `work/validation/`에, 전량 실행은 `work-full/validation/`에 저장됩니다.
+## 범위와 데이터
 
-2026-09-28 검증 완료: 새 다운로드 실행과 BotSim·fox8 원문 전량 재실행에서 핵심 수치 및 48개 상세 대조를 통과했습니다.
+- **BotSim:** 전체 1,869계정, 분량 매칭 512쌍. 세 통제는 각각 실행한다. 250자질, BH 4묶음, 매칭·순열·학습 시드와 기존 반올림 규칙을 유지했다.
+- **fox8:** 전체 1,991계정 중 고정 확인 집합 996계정(봇 547·사람 449). 학습 눈금의 10번째 이웃 거리와 로지스틱을 1:1 순위 결합한다. 중심·퍼짐 합성 자료, 봇 비중 50/25/10/5%, 사람 자료원, 절단 꼬리, 잔여 자기폭로 문구 조건을 재현한다.
+- **OpenRouter:** 요청대로 **기존 데이터만** 제공한다. `openrouter.jsonl.gz`는 5모델의 저장 응답 55,590슬롯이며 전부 분석 적격 문서라는 뜻은 아니다. 계정 측정 사전·사람 대조 사전·예시 글·분할도 함께 있다. 새 생성과 당시 보조 실험 전체 재실행은 이 간결본의 실행 범위가 아니다.
+- fox8 전체를 이전 방식으로 살펴본 후 개발/확인 집합을 나눴다. 완전히 처음 보는 독립 시험으로 간주하지 않는다. 부트스트랩은 점수·이웃 구조를 고정한 평가 집합 내부 구간이다.
 
-**[연구 결과 요약](docs/RESULTS.md)** · [실험 순서와 코드](docs/PIPELINE.md) · [검증 상태](docs/VALIDATION.md)
+출처: [BotSim](https://github.com/QQQQQQBY/BotSim) (`5c3558f`), [fox8](https://github.com/osome-iu/AIBot_fox8) (`4f6bf49`), [fox8 원자료](https://doi.org/10.5281/zenodo.8035289), [UD English-EWT](https://github.com/UniversalDependencies/UD_English-EWT), [Stanza](https://stanfordnlp.github.io/stanza/).
+입력 해시는 `data/manifest.json`으로 검사한다. 출처별 권리는 원 제공 조건을 따른다. SNS 원문·계정 식별자가 있으므로 **비공개 공동연구 전달용**으로 취급한다. 임의의 새 공개 라이선스를 부여하지 않았다.
 
-<details>
-<summary>무엇이 포함되어 있나?</summary>
+### 전달 상태
 
-- BotSim 원문·라벨, fox8 원본 압축 데이터
-- OpenRouter에서 이미 생성한 댓글과 분석 입력
-- UD 기능어 목록 생성 자료와 고정 Stanza 모델
-- 최종 측정·통제·동질성·분류 코드와 기준 결과 검사
+이 **로컬 폴더에는 원자료가 포함**되어 있다. `data/raw/`는 대용량이라 Git 이력에서 제외했다. GitHub 갱신·데이터 자산 업로드는 아직 완료되지 않았다. 현재 GitHub의 이전 버전과 이 폴더를 혼동하지 않는다.
+빠른 재현은 `data/raw/` 없이도 실행할 수 있다. 원문 재측정에는 원자료를 포함한 전체 전달본이 필요하다.
 
-`run.sh`만 실행하면 됩니다. 원래 Obsidian 연구 폴더나 개인 Python 환경은 참조하지 않습니다. 실패한 옛 판별기·모델·중복 실행분·생성 API 코드는 배포하지 않습니다.
-
-[데이터 출처·구성](docs/DATA.md) · [상세 실행 안내](docs/RUN.md) · [공유 범위](NOTICE.md)
-</details>
+**검증:** 핵심 단위검사 8개, 분석·학습·최종 확인 결과 대조, 원자료→DB 재구성, 코퍼스별 부분 파싱 대조를 통과했다. 이번 정리에서 전 계정의 Stanza 파싱을 다시 완료한 것은 아니다.
