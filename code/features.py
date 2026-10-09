@@ -196,7 +196,7 @@ def full_parse(limit):
     import stanza
     import torch
     C.check(stanza.__version__ == "1.14.0", "stanza 1.14.0 필요")
-    line("[full] 1/5 BotSim 적격 · 댓글 코퍼스 · 02 기능어 목록 (원문)")
+    line("[full] 1/5 BotSim 적격 계정 · 댓글 코퍼스 · 기능어 목록 (원문)")
     t = time.time()
     eligible, subs, comment_docs, labels = full_botsim_corpus()
     raw_words = full_funcwords()
@@ -227,7 +227,7 @@ def full_parse(limit):
             cache.put(corpus, uid, fp, got)
         return got
 
-    line("[full] 3/5 BotSim 파싱 (계정 단위 bulk_process, 04 · 04-1)")
+    line("[full] 3/5 BotSim 파싱 (계정 단위 bulk_process)")
     ids = sorted(eligible)[:limit] if limit else sorted(eligible)
     botsim, politics, per_doc = {}, {}, {}
     t = time.time()

@@ -18,13 +18,13 @@
   "data/records/fox8_LICENSE": "e853654939c6c6bf696c81fdb636e9f0d0094fefadafcede3356975939342af2",
   "data/records/fox8_README.md": "f1ae2057676834cdd8683ed81e21589b4f28bde7ea356a07d76f8627c0b8d423",
   "data/records/openrouter-split.json": "cdea4bf704bb1ab608f496e69e55c3a8010b3eea60a04bbd94a4d433e03f6681",
-  "data/records/protocol.md": "8d2ac4055a84d969bf6c1400a77f380d8092f3ab2b3343a39ba4c2026a5f6528",
-  "data/records/provenance.json": "80e53df11bf9afa94e643ed4f8762bb8a7c05bf386cbeef70f102fadeb57f07a",
+  "data/records/protocol.md": "a490f2f8e9259585613d8e2c01b0a3645b414a8098c9241d3e02640cc79e8629",
+  "data/records/provenance.json": "bc960b3105e7351c4f70b049ca4ec05ecfccdb7e07dae0b5977177efba57337a",
   "data/records/schema.json": "ba77bd125328cca4e474b54d0a9c3a7f1077af285077c82fc84eb1fdc8e4d3a0",
   "data/records/split_fox8.json": "ba2888c68a0cc7a06f3cc75e48584846e8bf5b7f469cdb715cc704b781319f24",
   "expected/analysis.json": "fe858af2b8d401aaf8755b04a5c3a0a7b6fad8bc120163a7f64a2b10d5f0151b",
   "expected/evaluation.json": "87fcbb60b59520b82853e75d8a4b3930aa59dd9340e1a0426765302d1541c8fc",
   "expected/training.json": "2a42bdbbb20d341bea2f518d854cf41a43d64f7679a255c32176d8cfabb3dd3a",
-  "data/records/openrouter.md": "56a6ed4f6a9bcfead649181f17c757b2c36df2b42418f7a8d0e7e6c80dc2a9cf"
+  "data/records/openrouter.md": "009e9cf0eed4438258bbf528b44f84d1100fe3cc4009d8efd1108d42a3712802"
  }
 }

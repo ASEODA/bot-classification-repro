@@ -1,4 +1,4 @@
-"""고정된 GitHub 릴리스에서 원문 코퍼스와 파서 모델을 준비한다."""
+"""고정 릴리스에서 원문 코퍼스와 파서 모델을 준비한다."""
 import gzip
 import hashlib
 import io
@@ -31,7 +31,7 @@ def gzip_copy(src, path):
 
 
 def public_openrouter(data):
-    """측정값과 연구 메타데이터를 보존하고 로컬 실행 메타데이터를 정리한다."""
+    """측정값은 보존하고, 배포에 필요 없는 실행·판정 기록과 로컬 정보는 정리한다."""
     settings = data["설정"]
     for key in ("실행", "smoke", "시험입력", "관문통과", "사전선언",
                 "구현결정", "관문", "속도", "소요"):
@@ -174,9 +174,9 @@ def ensure():
     if all((raw / name).is_file() for name in expected):
         return
     if not URL.startswith("https://github.com/"):
-        raise RuntimeError("익명 미러에서는 원자료를 자동 다운로드할 수 없습니다. "
-                           "README.md에 따라 준비 완료 입력을 data/raw/에 넣으세요.")
-    print("원자료·모델 준비: 고정 GitHub Release에서 약 354 MB 다운로드", flush=True)
+        raise RuntimeError("익명 배포본에서는 원자료를 내려받을 수 없습니다. "
+                           "기본 fast 모드(bash run.sh)로 재현하세요.")
+    print("원자료·모델 준비: 고정 릴리스에서 약 354 MB 다운로드", flush=True)
     with tempfile.TemporaryDirectory(prefix="bot-repro-data-") as tmp:
         work = Path(tmp)
         for name, sha in ASSETS.items():

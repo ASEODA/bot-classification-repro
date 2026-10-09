@@ -120,7 +120,7 @@ class DataPreparationTests(unittest.TestCase):
             (root/"data/manifest.json").write_text(json.dumps({"files":{"data/raw/botsim.zip":"0"*64}}))
             with patch.object(P,"ROOT",root), patch.object(P,"URL","https://anonymous.example/release/"), \
                     patch.object(P.urllib.request,"urlopen") as request:
-                with self.assertRaisesRegex(RuntimeError,"익명 미러"):
+                with self.assertRaisesRegex(RuntimeError,"익명 배포본"):
                     P.ensure()
                 request.assert_not_called()
 

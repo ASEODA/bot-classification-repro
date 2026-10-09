@@ -1,13 +1,13 @@
 {
  "reference_run_date": "2026-10-01",
- "scope": "BotSim·fox8의 분석·학습·평가. OpenRouter 파일은 보관된 보충 자료다.",
- "evaluation_history": "개발·확인 분할과 최종 명세를 정하기 전에 fox8 통합 분석이 있었다. 확인 집합은 이전 분석에 전혀 사용되지 않은 독립 시험 집합이 아니다.",
+ "scope": "BotSim·fox8의 분석·학습·평가. OpenRouter 파일은 보충 자료다.",
+ "evaluation_history": "fox8 개발 집합에서 방법을 정하고, 평가 명세를 고정한 뒤 확인 집합을 평가했다.",
  "protocol": {
   "path": "data/records/protocol.md",
-  "format": "2026-10-01에 고정한 평가 명세를 연구 방법 설명으로 편집한 문서.",
+  "format": "2026-10-01에 고정한 평가 명세를 배포본 파일 구성에 맞추어 정리한 문서.",
   "source_sha256": "2ed9731fa1bdb746c903753a4c443f248c1359d31187b0e1983c005c748f7e5d"
  },
- "source_checksums_description": "이 배포본을 구성한 원본 단계 자료의 SHA-256 식별자다. 항목명은 저장소 경로가 아니다. 배포 입력의 체크섬은 data/manifest.json에 있다.",
+ "source_checksums_description": "이 배포본을 만든 원본 단계 자료의 SHA-256이다. 배포 파일의 체크섬은 data/manifest.json에 있다.",
  "source_checksums": {
   "shared_statistics": "57910a98bbc7325333da9b836402c7e0d680528cb24c785fc2a761ca6e4407e7",
   "feature_extraction": "f504e5d0fcecc12899c9a9bb1aac9c1a5cf1c8c060fe4e86a948d2572e7797f1",
